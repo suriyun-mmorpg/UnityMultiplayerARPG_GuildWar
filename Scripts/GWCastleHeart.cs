@@ -27,6 +27,8 @@ namespace MultiplayerARPG.MMO.GuildWar
                         otherGuildCharacters[i].RespawnPosition);
                 }
             }
+
+            GWManager.Singleton.DefenderGuildId = winnerGuildId;
         }
     }
 }
