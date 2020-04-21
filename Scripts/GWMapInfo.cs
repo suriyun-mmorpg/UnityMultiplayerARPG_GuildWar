@@ -7,7 +7,7 @@ namespace MultiplayerARPG.MMO.GuildWar
     [CreateAssetMenu(fileName = "GW Map Info", menuName = "Create GameData/GW Map Info", order = -4798)]
     public class GWMapInfo : BaseMapInfo
     {
-        [System.Serializable]
+        [Serializable]
         public struct EventTime
         {
             public bool isOn;
@@ -69,6 +69,11 @@ namespace MultiplayerARPG.MMO.GuildWar
                 return targetPlayer.GuildId != 0 && targetPlayer.GuildId == playerCharacter.GuildId;
             }
 
+            if (targetCharacter is GWMonsterCharacterEntity)
+            {
+                return GWManager.Singleton.DefenderGuildId != 0 && GWManager.Singleton.DefenderGuildId == playerCharacter.GuildId;
+            }
+
             if (targetCharacter is BaseMonsterCharacterEntity)
             {
                 // If this character is summoner so it is ally
@@ -94,16 +99,19 @@ namespace MultiplayerARPG.MMO.GuildWar
                 return targetCharacter == monsterCharacter.Summoner || targetCharacter.IsAlly(monsterCharacter.Summoner);
             }
 
+            if (targetCharacter is GWMonsterCharacterEntity)
+            {
+                // Monsters won't attack castle heart
+                return true;
+            }
+
             if (targetCharacter is BaseMonsterCharacterEntity)
             {
                 // If another monster has same allyId so it is ally
                 BaseMonsterCharacterEntity targetMonster = targetCharacter as BaseMonsterCharacterEntity;
-                if (targetMonster != null)
-                {
-                    if (targetMonster.IsSummoned)
-                        return monsterCharacter.IsAlly(targetMonster.Summoner);
-                    return targetMonster.MonsterDatabase.allyId == monsterCharacter.MonsterDatabase.allyId;
-                }
+                if (targetMonster.IsSummoned)
+                    return monsterCharacter.IsAlly(targetMonster.Summoner);
+                return targetMonster.MonsterDatabase.allyId == monsterCharacter.MonsterDatabase.allyId;
             }
 
             return false;
@@ -119,12 +127,19 @@ namespace MultiplayerARPG.MMO.GuildWar
                 BasePlayerCharacterEntity targetPlayer = targetCharacter as BasePlayerCharacterEntity;
                 return targetPlayer.GuildId == 0 || targetPlayer.GuildId != playerCharacter.GuildId;
             }
+
+            if (targetCharacter is GWMonsterCharacterEntity)
+            {
+                return GWManager.Singleton.DefenderGuildId == 0 || GWManager.Singleton.DefenderGuildId != playerCharacter.GuildId;
+            }
+
             if (targetCharacter is BaseMonsterCharacterEntity)
             {
                 // If this character is not summoner so it is enemy
                 BaseMonsterCharacterEntity targetMonster = targetCharacter as BaseMonsterCharacterEntity;
                 return targetMonster.Summoner == null || targetMonster.Summoner != this;
             }
+
             return false;
         }
 
