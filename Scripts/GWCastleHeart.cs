@@ -28,7 +28,7 @@ namespace MultiplayerARPG.MMO.GuildWar
                 }
             }
 
-            GWManager.Singleton.DefenderGuildId = winnerGuildId;
+            BaseGameNetworkManager.Singleton.DefenderGuildId = winnerGuildId;
         }
     }
 }

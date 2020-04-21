@@ -71,7 +71,7 @@ namespace MultiplayerARPG.MMO.GuildWar
 
             if (targetCharacter is GWMonsterCharacterEntity)
             {
-                return GWManager.Singleton.DefenderGuildId != 0 && GWManager.Singleton.DefenderGuildId == playerCharacter.GuildId;
+                return BaseGameNetworkManager.Singleton.DefenderGuildId != 0 && BaseGameNetworkManager.Singleton.DefenderGuildId == playerCharacter.GuildId;
             }
 
             if (targetCharacter is BaseMonsterCharacterEntity)
@@ -130,7 +130,7 @@ namespace MultiplayerARPG.MMO.GuildWar
 
             if (targetCharacter is GWMonsterCharacterEntity)
             {
-                return GWManager.Singleton.DefenderGuildId == 0 || GWManager.Singleton.DefenderGuildId != playerCharacter.GuildId;
+                return BaseGameNetworkManager.Singleton.DefenderGuildId == 0 || BaseGameNetworkManager.Singleton.DefenderGuildId != playerCharacter.GuildId;
             }
 
             if (targetCharacter is BaseMonsterCharacterEntity)
