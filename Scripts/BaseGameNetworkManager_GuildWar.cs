@@ -25,7 +25,7 @@ namespace MultiplayerARPG
 
         public void Update_GuildWar()
         {
-            if (!IsServer || !(CurrentMapInfo is GWMapInfo))
+            if (!IsServer || CurrentMapInfo == null || !(CurrentMapInfo is GWMapInfo))
                 return;
 
             GWMapInfo mapInfo = CurrentMapInfo as GWMapInfo;
