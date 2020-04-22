@@ -93,6 +93,26 @@ namespace MultiplayerARPG.MMO.GuildWar
             if (targetCharacter == null)
                 return false;
 
+            if (monsterCharacter is GWMonsterCharacterEntity)
+            {
+                if (targetCharacter is BasePlayerCharacterEntity)
+                {
+                    BasePlayerCharacterEntity targetPlayer = targetCharacter as BasePlayerCharacterEntity;
+                    return BaseGameNetworkManager.Singleton.DefenderGuildId != 0 && BaseGameNetworkManager.Singleton.DefenderGuildId == targetPlayer.GuildId;
+                }
+
+                if (targetCharacter is BaseMonsterCharacterEntity)
+                {
+                    // If another monster has same allyId so it is ally
+                    BaseMonsterCharacterEntity targetMonster = targetCharacter as BaseMonsterCharacterEntity;
+                    if (targetMonster.IsSummoned)
+                        return monsterCharacter.IsAlly(targetMonster.Summoner);
+                    return false;
+                }
+
+                return true;
+            }
+
             if (monsterCharacter.IsSummoned)
             {
                 // If summoned by someone, will have same allies with summoner
@@ -147,6 +167,26 @@ namespace MultiplayerARPG.MMO.GuildWar
         {
             if (targetCharacter == null)
                 return false;
+
+            if (monsterCharacter is GWMonsterCharacterEntity)
+            {
+                if (targetCharacter is BasePlayerCharacterEntity)
+                {
+                    BasePlayerCharacterEntity targetPlayer = targetCharacter as BasePlayerCharacterEntity;
+                    return BaseGameNetworkManager.Singleton.DefenderGuildId == 0 || BaseGameNetworkManager.Singleton.DefenderGuildId != targetPlayer.GuildId;
+                }
+
+                if (targetCharacter is BaseMonsterCharacterEntity)
+                {
+                    // If another monster has same allyId so it is ally
+                    BaseMonsterCharacterEntity targetMonster = targetCharacter as BaseMonsterCharacterEntity;
+                    if (targetMonster.IsSummoned)
+                        return monsterCharacter.IsEnemy(targetMonster.Summoner);
+                    return false;
+                }
+
+                return false;
+            }
 
             if (monsterCharacter.IsSummoned)
             {
