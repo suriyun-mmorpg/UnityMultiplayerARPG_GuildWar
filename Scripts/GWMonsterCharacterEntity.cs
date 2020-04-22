@@ -24,7 +24,7 @@ namespace MultiplayerARPG.MMO.GuildWar
 
         public override void ReceiveDamage(IGameEntity attacker, CharacterItem weapon, Dictionary<DamageElement, MinMaxFloat> damageAmounts, BaseSkill skill, short skillLevel)
         {
-            if (!IsServer || IsDead() || GetGuildId(attacker) == 0 || !CanReceiveDamageFrom(attacker))
+            if (!IsServer || IsDead() || GetGuildId(attacker) == 0 || GetGuildId(attacker) == CurrentGameManager.DefenderGuildId || !CanReceiveDamageFrom(attacker))
                 return;
 
             base.ReceiveDamage(attacker, weapon, damageAmounts, skill, skillLevel);
