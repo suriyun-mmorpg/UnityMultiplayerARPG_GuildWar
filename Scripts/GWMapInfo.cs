@@ -81,7 +81,12 @@ namespace MultiplayerARPG.MMO.GuildWar
                 if (targetMonster.IsSummoned)
                 {
                     // If summoned by someone, will have same allies with summoner
-                    return playerCharacter == targetMonster.Summoner || targetCharacter.IsAlly(targetMonster.Summoner);
+                    return targetMonster.Summoner.IsAlly(playerCharacter);
+                }
+                else
+                {
+                    // Monster always not player's ally
+                    return false;
                 }
             }
 
@@ -116,7 +121,7 @@ namespace MultiplayerARPG.MMO.GuildWar
             if (monsterCharacter.IsSummoned)
             {
                 // If summoned by someone, will have same allies with summoner
-                return targetCharacter == monsterCharacter.Summoner || targetCharacter.IsAlly(monsterCharacter.Summoner);
+                return targetCharacter == monsterCharacter.Summoner || monsterCharacter.Summoner.IsAlly(targetCharacter);
             }
 
             if (targetCharacter is GWMonsterCharacterEntity)
@@ -157,7 +162,16 @@ namespace MultiplayerARPG.MMO.GuildWar
             {
                 // If this character is not summoner so it is enemy
                 BaseMonsterCharacterEntity targetMonster = targetCharacter as BaseMonsterCharacterEntity;
-                return targetMonster.Summoner == null || targetMonster.Summoner != this;
+                if (targetMonster.IsSummoned)
+                {
+                    // If summoned by someone, will have same enemies with summoner
+                    return targetMonster.Summoner.IsEnemy(playerCharacter);
+                }
+                else
+                {
+                    // Monster always be player's enemy
+                    return true;
+                }
             }
 
             return false;
@@ -191,7 +205,7 @@ namespace MultiplayerARPG.MMO.GuildWar
             if (monsterCharacter.IsSummoned)
             {
                 // If summoned by someone, will have same enemies with summoner
-                return targetCharacter != monsterCharacter.Summoner && targetCharacter.IsEnemy(monsterCharacter.Summoner);
+                return targetCharacter != monsterCharacter.Summoner && monsterCharacter.Summoner.IsEnemy(targetCharacter);
             }
 
             // Attack only player by default
