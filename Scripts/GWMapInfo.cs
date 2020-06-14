@@ -136,7 +136,7 @@ namespace MultiplayerARPG.MMO.GuildWar
                 BaseMonsterCharacterEntity targetMonster = targetCharacter as BaseMonsterCharacterEntity;
                 if (targetMonster.IsSummoned)
                     return monsterCharacter.IsAlly(targetMonster.Summoner);
-                return targetMonster.MonsterDatabase.allyId == monsterCharacter.MonsterDatabase.allyId;
+                return targetMonster.CharacterDatabase.allyId == monsterCharacter.CharacterDatabase.allyId;
             }
 
             return false;
