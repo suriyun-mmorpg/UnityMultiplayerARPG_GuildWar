@@ -21,10 +21,11 @@ namespace MultiplayerARPG.MMO.GuildWar
                 if (otherGuildCharacters[i].GuildId <= 0 ||
                     otherGuildCharacters[i].GuildId != winnerGuildId)
                 {
-                    CurrentGameManager.WarpCharacter(WarpPortalType.Default, 
-                        otherGuildCharacters[i], 
-                        otherGuildCharacters[i].RespawnMapName, 
-                        otherGuildCharacters[i].RespawnPosition);
+                    CurrentGameManager.WarpCharacter(WarpPortalType.Default,
+                        otherGuildCharacters[i],
+                        otherGuildCharacters[i].RespawnMapName,
+                        otherGuildCharacters[i].RespawnPosition,
+                        false, Vector3.zero);
                 }
             }
 
