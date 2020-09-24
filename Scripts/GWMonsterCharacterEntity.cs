@@ -22,12 +22,11 @@ namespace MultiplayerARPG.MMO.GuildWar
             return guildId;
         }
 
-        public override void ReceiveDamage(Vector3 fromPosition, IGameEntity attacker, Dictionary<DamageElement, MinMaxFloat> damageAmounts, CharacterItem weapon, BaseSkill skill, short skillLevel)
+        internal override void ReceiveDamageFunction(Vector3 fromPosition, IGameEntity attacker, Dictionary<DamageElement, MinMaxFloat> damageAmounts, CharacterItem weapon, BaseSkill skill, short skillLevel)
         {
-            if (!IsServer || this.IsDead() || GetGuildId(attacker) == 0 || GetGuildId(attacker) == CurrentGameManager.DefenderGuildId || !CanReceiveDamageFrom(attacker))
+            if (GetGuildId(attacker) == 0 || GetGuildId(attacker) == CurrentGameManager.DefenderGuildId)
                 return;
-
-            base.ReceiveDamage(fromPosition, attacker, damageAmounts, weapon, skill, skillLevel);
+            base.ReceiveDamageFunction(fromPosition, attacker, damageAmounts, weapon, skill, skillLevel);
         }
     }
 }
