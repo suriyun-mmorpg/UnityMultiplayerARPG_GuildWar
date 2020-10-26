@@ -13,14 +13,14 @@ namespace MultiplayerARPG
         [DevExtMethods("OnStartServer")]
         public void OnStartServer_GuildWar()
         {
-            CancelInvoke("Update_GuildWar");
-            InvokeRepeating("Update_GuildWar", 1, 1);
+            CancelInvoke(nameof(Update_GuildWar));
+            InvokeRepeating(nameof(Update_GuildWar), 1, 1);
         }
 
         [DevExtMethods("Clean")]
         public void Clean_GuildWar()
         {
-            CancelInvoke("Update_GuildWar");
+            CancelInvoke(nameof(Update_GuildWar));
         }
 
         public void Update_GuildWar()
