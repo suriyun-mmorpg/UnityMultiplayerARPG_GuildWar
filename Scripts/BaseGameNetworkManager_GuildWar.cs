@@ -25,10 +25,10 @@ namespace MultiplayerARPG
 
         public void Update_GuildWar()
         {
-            if (!IsServer || CurrentMapInfo == null || !(CurrentMapInfo is GWMapInfo))
+            if (!IsServer || CurrentMapInfo == null || !(CurrentMapInfo is GuildWarMapInfo))
                 return;
 
-            GWMapInfo mapInfo = CurrentMapInfo as GWMapInfo;
+            GuildWarMapInfo mapInfo = CurrentMapInfo as GuildWarMapInfo;
             if (!GuildWarStarted && mapInfo.IsOn())
             {
                 // Announce to players that the guild war started

@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace MultiplayerARPG.MMO.GuildWar
 {
-    [CreateAssetMenu(fileName = "GW Map Info", menuName = "Create GameData/GW Map Info", order = -4798)]
-    public class GWMapInfo : BaseMapInfo
+    [CreateAssetMenu(fileName = "Guild War Map Info", menuName = "Create GameData/Guild War Map Info", order = -4798)]
+    public class GuildWarMapInfo : BaseMapInfo
     {
         [Serializable]
         public struct EventTime
@@ -69,7 +69,7 @@ namespace MultiplayerARPG.MMO.GuildWar
                 return targetPlayer.GuildId != 0 && targetPlayer.GuildId == playerCharacter.GuildId;
             }
 
-            if (targetCharacter is GWMonsterCharacterEntity)
+            if (targetCharacter is GuildWarMonsterCharacterEntity)
             {
                 return BaseGameNetworkManager.Singleton.DefenderGuildId != 0 && BaseGameNetworkManager.Singleton.DefenderGuildId == playerCharacter.GuildId;
             }
@@ -98,7 +98,7 @@ namespace MultiplayerARPG.MMO.GuildWar
             if (targetCharacter == null)
                 return false;
 
-            if (monsterCharacter is GWMonsterCharacterEntity)
+            if (monsterCharacter is GuildWarMonsterCharacterEntity)
             {
                 if (targetCharacter is BasePlayerCharacterEntity)
                 {
@@ -124,7 +124,7 @@ namespace MultiplayerARPG.MMO.GuildWar
                 return targetCharacter == monsterCharacter.Summoner || monsterCharacter.Summoner.IsAlly(targetCharacter);
             }
 
-            if (targetCharacter is GWMonsterCharacterEntity)
+            if (targetCharacter is GuildWarMonsterCharacterEntity)
             {
                 // Monsters won't attack castle heart
                 return true;
@@ -153,7 +153,7 @@ namespace MultiplayerARPG.MMO.GuildWar
                 return targetPlayer.GuildId == 0 || targetPlayer.GuildId != playerCharacter.GuildId;
             }
 
-            if (targetCharacter is GWMonsterCharacterEntity)
+            if (targetCharacter is GuildWarMonsterCharacterEntity)
             {
                 return BaseGameNetworkManager.Singleton.DefenderGuildId == 0 || BaseGameNetworkManager.Singleton.DefenderGuildId != playerCharacter.GuildId;
             }
@@ -182,7 +182,7 @@ namespace MultiplayerARPG.MMO.GuildWar
             if (targetCharacter == null)
                 return false;
 
-            if (monsterCharacter is GWMonsterCharacterEntity)
+            if (monsterCharacter is GuildWarMonsterCharacterEntity)
             {
                 if (targetCharacter is BasePlayerCharacterEntity)
                 {

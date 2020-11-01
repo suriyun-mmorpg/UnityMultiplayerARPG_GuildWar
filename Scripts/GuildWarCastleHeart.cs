@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MultiplayerARPG.MMO.GuildWar
 {
-    public class GWCastleHeart : GWMonsterCharacterEntity
+    public class GuildWarCastleHeart : GuildWarMonsterCharacterEntity
     {
 
         public override void Killed(IGameEntity lastAttacker)

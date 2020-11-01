@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MultiplayerARPG.MMO.GuildWar
 {
-    public class GWMonsterCharacterEntity : MonsterCharacterEntity
+    public class GuildWarMonsterCharacterEntity : MonsterCharacterEntity
     {
         public int GetGuildId(IGameEntity entity)
         {
