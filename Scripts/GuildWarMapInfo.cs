@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MultiplayerARPG.MMO.GuildWar
 {
-    [CreateAssetMenu(fileName = "Guild War Map Info", menuName = "Create GameData/Guild War Map Info", order = -4798)]
+    [CreateAssetMenu(fileName = "Guild War Map Info", menuName = "Create GameData/Guild War Map Info", order = -4799)]
     public class GuildWarMapInfo : BaseMapInfo
     {
         [Serializable]
