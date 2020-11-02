@@ -7,7 +7,7 @@ namespace MultiplayerARPG
 {
     public abstract partial class BaseGameNetworkManager
     {
-        public bool GuildWarStarted { get; protected set; }
+        public bool GuildWarStarted { get; private set; }
         public System.DateTime LastOccupyTime { get; private set; }
         public int DefenderGuildId { get; private set; }
 
@@ -83,7 +83,7 @@ namespace MultiplayerARPG
             }
         }
 
-        protected virtual void GiveGuildBattleRewardTo(int guildId)
+        private void GiveGuildBattleRewardTo(int guildId)
         {
 
         }
