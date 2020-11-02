@@ -17,6 +17,7 @@ namespace MultiplayerARPG.MMO.GuildWar
             public byte endTime;
         }
 
+        [Header("Event time settings")]
         public EventTime sunday;
         public EventTime monday;
         public EventTime tuesday;
@@ -26,6 +27,15 @@ namespace MultiplayerARPG.MMO.GuildWar
         public EventTime saturday;
         [Tooltip("Battle duration (minutes), if defender can defend castle within this duration, defender will win that round.")]
         public int battleDuration = 15;
+
+        [Header("Announce messages")]
+        public string eventStartedMessage = "Guild war started !!";
+        public string eventEndedMessage = "Guild war ended !!";
+        public string roundEndedMessage = "Current guild war round ended !!";
+        [Tooltip("{0} is guild name")]
+        public string defenderWinMessage = "{0} can defend the castle and win this round.";
+        [Tooltip("{0} is guild name")]
+        public string attackerWinMessage = "{0} can occupy the castle and win this round.";
 
         public override bool AutoRespawnWhenDead { get { return true; } }
 

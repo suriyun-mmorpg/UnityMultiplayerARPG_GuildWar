@@ -10,6 +10,7 @@ namespace MultiplayerARPG
         public bool GuildWarStarted { get; private set; }
         public System.DateTime LastOccupyTime { get; private set; }
         public int DefenderGuildId { get; private set; }
+        public string DefenderGuildName { get; private set; }
 
         [DevExtMethods("OnStartServer")]
         public void OnStartServer_GuildWar()
@@ -32,37 +33,52 @@ namespace MultiplayerARPG
             GuildWarMapInfo mapInfo = CurrentMapInfo as GuildWarMapInfo;
             if (!GuildWarStarted && mapInfo.IsOn)
             {
-                // TODO: Announce to players that the guild war started
+                SendSystemAnnounce(mapInfo.eventStartedMessage);
+                DefenderGuildId = 0;
+                DefenderGuildName = string.Empty;
                 GuildWarStarted = true;
             }
 
             if (GuildWarStarted && !mapInfo.IsOn)
             {
-                // TODO: Announce to players that the guild war ended
+                SendSystemAnnounce(mapInfo.eventEndedMessage);
                 GuildWarStarted = false;
-                GiveGuildBattleRewardTo(DefenderGuildId);
-                ExpelLoserGuilds(DefenderGuildId);
+                if (DefenderGuildId > 0)
+                {
+                    SendSystemAnnounce(string.Format(mapInfo.defenderWinMessage, DefenderGuildName));
+                    GiveGuildBattleRewardTo(DefenderGuildId);
+                    ExpelLoserGuilds(DefenderGuildId);
+                }
             }
 
             if (GuildWarStarted)
             {
                 if ((System.DateTime.Now - LastOccupyTime).TotalMinutes >= mapInfo.battleDuration)
                 {
-                    // TODO: Announce to players that defender guild win
+                    SendSystemAnnounce(mapInfo.roundEndedMessage);
                     LastOccupyTime = System.DateTime.Now;
-                    GiveGuildBattleRewardTo(DefenderGuildId);
-                    ExpelLoserGuilds(DefenderGuildId);
+                    if (DefenderGuildId > 0)
+                    {
+                        SendSystemAnnounce(string.Format(mapInfo.defenderWinMessage, DefenderGuildName));
+                        GiveGuildBattleRewardTo(DefenderGuildId);
+                        ExpelLoserGuilds(DefenderGuildId);
+                    }
                 }
             }
         }
 
         public void CastleOccupied(int attackerGuildId)
         {
-            // TODO: Announce to players that attacker guild win
+            GuildWarMapInfo mapInfo = CurrentMapInfo as GuildWarMapInfo;
             LastOccupyTime = System.DateTime.Now;
-            DefenderGuildId = attackerGuildId;
-            GiveGuildBattleRewardTo(DefenderGuildId);
-            ExpelLoserGuilds(DefenderGuildId);
+            if (attackerGuildId > 0)
+            {
+                DefenderGuildId = attackerGuildId;
+                DefenderGuildName = guilds[attackerGuildId].guildName;
+                SendSystemAnnounce(string.Format(mapInfo.attackerWinMessage, DefenderGuildName));
+                GiveGuildBattleRewardTo(DefenderGuildId);
+                ExpelLoserGuilds(DefenderGuildId);
+            }
         }
 
         private void ExpelLoserGuilds(int winnerGuildId)
