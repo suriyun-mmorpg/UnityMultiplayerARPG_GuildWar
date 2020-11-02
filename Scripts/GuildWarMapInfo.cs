@@ -38,6 +38,7 @@ namespace MultiplayerARPG.MMO.GuildWar
         public string attackerWinMessage = "{0} can occupy the castle and win this round.";
 
         public override bool AutoRespawnWhenDead { get { return true; } }
+        public override bool SaveCurrentPosition { get { return false; } }
 
         public bool IsOn
         {
