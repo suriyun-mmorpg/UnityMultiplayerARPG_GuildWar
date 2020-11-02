@@ -85,7 +85,7 @@ namespace MultiplayerARPG
 
         private void GiveGuildBattleRewardTo(int guildId)
         {
-
+            // TODO: May send reward to player's mail box which is not implemented yet.
         }
     }
 }
