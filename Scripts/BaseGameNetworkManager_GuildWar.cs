@@ -29,13 +29,13 @@ namespace MultiplayerARPG
                 return;
 
             GuildWarMapInfo mapInfo = CurrentMapInfo as GuildWarMapInfo;
-            if (!GuildWarStarted && mapInfo.IsOn())
+            if (!GuildWarStarted && mapInfo.IsOn)
             {
                 // Announce to players that the guild war started
                 GuildWarStarted = true;
             }
 
-            if (GuildWarStarted && !mapInfo.IsOn())
+            if (GuildWarStarted && !mapInfo.IsOn)
             {
                 // Announce to players that the guild war ended
                 GuildWarStarted = true;
