@@ -38,7 +38,7 @@ namespace MultiplayerARPG
             if (GuildWarStarted && !mapInfo.IsOn)
             {
                 // Announce to players that the guild war ended
-                GuildWarStarted = true;
+                GuildWarStarted = false;
             }
         }
     }
