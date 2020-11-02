@@ -25,37 +25,42 @@ namespace MultiplayerARPG.MMO.GuildWar
         public EventTime friday;
         public EventTime saturday;
 
-        public bool IsOn()
+        public override bool AutoRespawnWhenDead { get { return true; } }
+
+        public bool IsOn
         {
-            EventTime eventTime;
-            switch (DateTime.Now.DayOfWeek)
+            get
             {
-                case DayOfWeek.Sunday:
-                    eventTime = sunday;
-                    break;
-                case DayOfWeek.Monday:
-                    eventTime = monday;
-                    break;
-                case DayOfWeek.Tuesday:
-                    eventTime = tuesday;
-                    break;
-                case DayOfWeek.Wednesday:
-                    eventTime = wednesday;
-                    break;
-                case DayOfWeek.Thursday:
-                    eventTime = thursday;
-                    break;
-                case DayOfWeek.Friday:
-                    eventTime = friday;
-                    break;
-                case DayOfWeek.Saturday:
-                    eventTime = saturday;
-                    break;
-                default:
-                    eventTime = sunday;
-                    break;
+                EventTime eventTime;
+                switch (DateTime.Now.DayOfWeek)
+                {
+                    case DayOfWeek.Sunday:
+                        eventTime = sunday;
+                        break;
+                    case DayOfWeek.Monday:
+                        eventTime = monday;
+                        break;
+                    case DayOfWeek.Tuesday:
+                        eventTime = tuesday;
+                        break;
+                    case DayOfWeek.Wednesday:
+                        eventTime = wednesday;
+                        break;
+                    case DayOfWeek.Thursday:
+                        eventTime = thursday;
+                        break;
+                    case DayOfWeek.Friday:
+                        eventTime = friday;
+                        break;
+                    case DayOfWeek.Saturday:
+                        eventTime = saturday;
+                        break;
+                    default:
+                        eventTime = sunday;
+                        break;
+                }
+                return eventTime.isOn && DateTime.Now.Hour >= eventTime.startTime && DateTime.Now.Hour < eventTime.endTime;
             }
-            return eventTime.isOn && DateTime.Now.Hour >= eventTime.startTime && DateTime.Now.Hour < eventTime.endTime;
         }
 
         protected override bool IsPlayerAlly(BasePlayerCharacterEntity playerCharacter, BaseCharacterEntity targetCharacter)
