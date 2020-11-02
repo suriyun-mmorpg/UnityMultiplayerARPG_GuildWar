@@ -24,6 +24,8 @@ namespace MultiplayerARPG.MMO.GuildWar
         public EventTime thursday;
         public EventTime friday;
         public EventTime saturday;
+        [Tooltip("Battle duration (minutes), if defender can defend castle within this duration, defender will win that round.")]
+        public int battleDuration = 15;
 
         public override bool AutoRespawnWhenDead { get { return true; } }
 
