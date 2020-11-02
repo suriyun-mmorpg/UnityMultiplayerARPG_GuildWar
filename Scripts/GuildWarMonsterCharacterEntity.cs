@@ -26,7 +26,7 @@ namespace MultiplayerARPG.MMO.GuildWar
         {
             if (!base.CanReceiveDamageFrom(attacker))
                 return false;
-            return GetGuildId(attacker) > 0 && GetGuildId(attacker) != CurrentGameManager.DefenderGuildId;
+            return CurrentGameManager.GuildWarRunning && GetGuildId(attacker) > 0 && GetGuildId(attacker) != CurrentGameManager.DefenderGuildId;
         }
     }
 }

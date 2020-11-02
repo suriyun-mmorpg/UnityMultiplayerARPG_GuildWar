@@ -7,7 +7,7 @@ namespace MultiplayerARPG
 {
     public abstract partial class BaseGameNetworkManager
     {
-        public bool GuildWarStarted { get; private set; }
+        public bool GuildWarRunning { get; private set; }
         public System.DateTime LastOccupyTime { get; private set; }
         public int DefenderGuildId { get; private set; }
         public string DefenderGuildName { get; private set; }
@@ -31,18 +31,18 @@ namespace MultiplayerARPG
                 return;
 
             GuildWarMapInfo mapInfo = CurrentMapInfo as GuildWarMapInfo;
-            if (!GuildWarStarted && mapInfo.IsOn)
+            if (!GuildWarRunning && mapInfo.IsOn)
             {
                 SendSystemAnnounce(mapInfo.eventStartedMessage);
                 DefenderGuildId = 0;
                 DefenderGuildName = string.Empty;
-                GuildWarStarted = true;
+                GuildWarRunning = true;
             }
 
-            if (GuildWarStarted && !mapInfo.IsOn)
+            if (GuildWarRunning && !mapInfo.IsOn)
             {
                 SendSystemAnnounce(mapInfo.eventEndedMessage);
-                GuildWarStarted = false;
+                GuildWarRunning = false;
                 if (DefenderGuildId > 0)
                 {
                     SendSystemAnnounce(string.Format(mapInfo.defenderWinMessage, DefenderGuildName));
@@ -51,7 +51,7 @@ namespace MultiplayerARPG
                 }
             }
 
-            if (GuildWarStarted)
+            if (GuildWarRunning)
             {
                 if ((System.DateTime.Now - LastOccupyTime).TotalMinutes >= mapInfo.battleDuration)
                 {
