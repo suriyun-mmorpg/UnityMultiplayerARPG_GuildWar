@@ -2,15 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MultiplayerARPG.MMO.GuildWar;
+using LiteNetLibManager;
+using LiteNetLib;
 
 namespace MultiplayerARPG
 {
     public abstract partial class BaseGameNetworkManager
     {
+        [Header("Guild War")]
+        public ushort guildWarStatusMsgType = 50;
+
         public bool GuildWarRunning { get; private set; }
         public System.DateTime LastOccupyTime { get; private set; }
         public int DefenderGuildId { get; private set; }
         public string DefenderGuildName { get; private set; }
+
+        [DevExtMethods("RegisterClientMessages")]
+        public void RegisterClientMessages_GuildWar()
+        {
+            RegisterClientMessage(guildWarStatusMsgType, HandleGuildWarStatusAtClient);
+        }
 
         [DevExtMethods("OnStartServer")]
         public void OnStartServer_GuildWar()
@@ -19,10 +30,47 @@ namespace MultiplayerARPG
             InvokeRepeating(nameof(Update_GuildWar), 1, 1);
         }
 
+        [DevExtMethods("OnPeerConnected")]
+        public void OnPeerConnected_GuildWar(long connectionId)
+        {
+            SendGuildWarStatus(connectionId);
+        }
+
         [DevExtMethods("Clean")]
         public void Clean_GuildWar()
         {
             CancelInvoke(nameof(Update_GuildWar));
+        }
+
+        public void SendGuildWarStatus()
+        {
+            if (!IsServer)
+                return;
+            foreach (long connectionId in ConnectionIds)
+            {
+                SendGuildWarStatus(connectionId);
+            }
+        }
+
+        public void SendGuildWarStatus(long connectionId)
+        {
+            if (!IsServer)
+                return;
+            ServerSendPacket(connectionId, DeliveryMethod.ReliableOrdered, guildWarStatusMsgType, (writer) =>
+            {
+                writer.Put(GuildWarRunning);
+                writer.Put(DefenderGuildId);
+                writer.Put(DefenderGuildName);
+            });
+        }
+
+        private void HandleGuildWarStatusAtClient(MessageHandlerData messageHandler)
+        {
+            if (IsServer)
+                return;
+            GuildWarRunning = messageHandler.Reader.GetBool();
+            DefenderGuildId = messageHandler.Reader.GetInt();
+            DefenderGuildName = messageHandler.Reader.GetString();
         }
 
         public void Update_GuildWar()
@@ -36,7 +84,9 @@ namespace MultiplayerARPG
                 SendSystemAnnounce(mapInfo.eventStartedMessage);
                 DefenderGuildId = 0;
                 DefenderGuildName = string.Empty;
+                ExpelLoserGuilds(DefenderGuildId);
                 GuildWarRunning = true;
+                SendGuildWarStatus();
             }
 
             if (GuildWarRunning && !mapInfo.IsOn)
@@ -49,6 +99,7 @@ namespace MultiplayerARPG
                     GiveGuildBattleRewardTo(DefenderGuildId);
                     ExpelLoserGuilds(DefenderGuildId);
                 }
+                SendGuildWarStatus();
             }
 
             if (GuildWarRunning)
@@ -63,6 +114,7 @@ namespace MultiplayerARPG
                         GiveGuildBattleRewardTo(DefenderGuildId);
                         ExpelLoserGuilds(DefenderGuildId);
                     }
+                    SendGuildWarStatus();
                 }
             }
         }
@@ -79,6 +131,7 @@ namespace MultiplayerARPG
                 GiveGuildBattleRewardTo(DefenderGuildId);
                 ExpelLoserGuilds(DefenderGuildId);
             }
+            SendGuildWarStatus();
         }
 
         private void ExpelLoserGuilds(int winnerGuildId)
