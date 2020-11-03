@@ -18,26 +18,26 @@ namespace MultiplayerARPG
         public string DefenderGuildName { get; private set; }
 
         [DevExtMethods("RegisterClientMessages")]
-        public void RegisterClientMessages_GuildWar()
+        protected void RegisterClientMessages_GuildWar()
         {
             RegisterClientMessage(guildWarStatusMsgType, HandleGuildWarStatusAtClient);
         }
 
         [DevExtMethods("OnStartServer")]
-        public void OnStartServer_GuildWar()
+        protected void OnStartServer_GuildWar()
         {
             CancelInvoke(nameof(Update_GuildWar));
             InvokeRepeating(nameof(Update_GuildWar), 1, 1);
         }
 
         [DevExtMethods("OnPeerConnected")]
-        public void OnPeerConnected_GuildWar(long connectionId)
+        protected void OnPeerConnected_GuildWar(long connectionId)
         {
             SendGuildWarStatus(connectionId);
         }
 
         [DevExtMethods("Clean")]
-        public void Clean_GuildWar()
+        protected void Clean_GuildWar()
         {
             CancelInvoke(nameof(Update_GuildWar));
         }
