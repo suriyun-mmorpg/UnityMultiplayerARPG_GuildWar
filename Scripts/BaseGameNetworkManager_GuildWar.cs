@@ -10,7 +10,7 @@ namespace MultiplayerARPG
     public abstract partial class BaseGameNetworkManager
     {
         [Header("Guild War")]
-        public ushort guildWarStatusMsgType = 50;
+        public ushort guildWarStatusMsgType = 200;
 
         public bool GuildWarRunning { get; private set; }
         public System.DateTime LastOccupyTime { get; private set; }
