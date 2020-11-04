@@ -36,6 +36,12 @@ namespace MultiplayerARPG
             SendGuildWarStatus(connectionId);
         }
 
+        [DevExtMethods("OnServerOnlineSceneLoaded")]
+        protected void OnServerOnlineSceneLoaded_GuildWar()
+        {
+            SendGuildWarStatus();
+        }
+
         [DevExtMethods("Clean")]
         protected void Clean_GuildWar()
         {
