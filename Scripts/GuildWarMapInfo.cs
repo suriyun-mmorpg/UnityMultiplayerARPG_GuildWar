@@ -13,7 +13,7 @@ namespace MultiplayerARPG.MMO.GuildWar
             public bool isOn;
             [Range(0, 23)]
             public byte startTime;
-            [Range(0, 23)]
+            [Range(1, 24)]
             public byte endTime;
         }
 
@@ -26,6 +26,7 @@ namespace MultiplayerARPG.MMO.GuildWar
         public EventTime friday;
         public EventTime saturday;
         [Tooltip("Battle duration (minutes), if defender can defend castle within this duration, defender will win that round.")]
+        [Min(1)]
         public int battleDuration = 15;
 
         [Header("Announce messages")]
