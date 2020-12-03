@@ -11,6 +11,7 @@ namespace MultiplayerARPG
     {
         [Header("Guild War")]
         public ushort guildWarStatusMsgType = 200;
+        public bool regenerateMonstersWhenRoundEnd = true;
 
         public bool GuildWarRunning { get; private set; }
         public System.DateTime LastOccupyTime { get; private set; }
@@ -91,6 +92,7 @@ namespace MultiplayerARPG
                 DefenderGuildId = 0;
                 DefenderGuildName = string.Empty;
                 ExpelLoserGuilds(DefenderGuildId);
+                RegenerateMonsters();
                 GuildWarRunning = true;
                 SendGuildWarStatus();
             }
@@ -104,6 +106,7 @@ namespace MultiplayerARPG
                     SendSystemAnnounce(string.Format(mapInfo.defenderWinMessage, DefenderGuildName));
                     GiveGuildBattleRewardTo(DefenderGuildId);
                     ExpelLoserGuilds(DefenderGuildId);
+                    RegenerateMonsters();
                 }
                 SendGuildWarStatus();
             }
@@ -119,6 +122,7 @@ namespace MultiplayerARPG
                         SendSystemAnnounce(string.Format(mapInfo.defenderWinMessage, DefenderGuildName));
                         GiveGuildBattleRewardTo(DefenderGuildId);
                         ExpelLoserGuilds(DefenderGuildId);
+                        RegenerateMonsters();
                     }
                     SendGuildWarStatus();
                 }
@@ -136,6 +140,7 @@ namespace MultiplayerARPG
                 SendSystemAnnounce(string.Format(mapInfo.attackerWinMessage, DefenderGuildName));
                 GiveGuildBattleRewardTo(DefenderGuildId);
                 ExpelLoserGuilds(DefenderGuildId);
+                RegenerateMonsters();
             }
             SendGuildWarStatus();
         }
@@ -155,6 +160,23 @@ namespace MultiplayerARPG
                         otherGuildCharacters[i].RespawnPosition,
                         false, Vector3.zero);
                 }
+            }
+        }
+
+        private void RegenerateMonsters()
+        {
+            if (!regenerateMonstersWhenRoundEnd)
+                return;
+            foreach (LiteNetLibIdentity identity in Assets.GetSpawnedObjects())
+            {
+                GuildWarMonsterCharacterEntity monsterEntity = identity.GetComponent<GuildWarMonsterCharacterEntity>();
+                if (monsterEntity == null)
+                    continue;
+                monsterEntity.CurrentHp = monsterEntity.MaxHp;
+                monsterEntity.CurrentMp = monsterEntity.MaxMp;
+                monsterEntity.CurrentFood = monsterEntity.MaxFood;
+                monsterEntity.CurrentWater = monsterEntity.MaxWater;
+                monsterEntity.CurrentStamina = monsterEntity.MaxStamina;
             }
         }
 
