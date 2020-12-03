@@ -11,7 +11,7 @@ namespace MultiplayerARPG
     {
         [Header("Guild War")]
         public ushort guildWarStatusMsgType = 200;
-        public bool regenerateMonstersWhenRoundEnd = true;
+        public bool recoverMonstersWhenRoundEnd = true;
 
         public bool GuildWarRunning { get; private set; }
         public System.DateTime LastOccupyTime { get; private set; }
@@ -165,7 +165,7 @@ namespace MultiplayerARPG
 
         private void RegenerateMonsters()
         {
-            if (!regenerateMonstersWhenRoundEnd)
+            if (!recoverMonstersWhenRoundEnd)
                 return;
             foreach (LiteNetLibIdentity identity in Assets.GetSpawnedObjects())
             {
