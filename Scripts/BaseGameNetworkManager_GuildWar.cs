@@ -7,7 +7,7 @@ using LiteNetLib;
 
 namespace MultiplayerARPG
 {
-    public abstract partial class BaseGameNetworkManager
+    public partial class BaseGameNetworkManager
     {
         [Header("Guild War")]
         public ushort guildWarStatusMsgType = 200;
@@ -136,7 +136,7 @@ namespace MultiplayerARPG
             if (attackerGuildId > 0)
             {
                 DefenderGuildId = attackerGuildId;
-                DefenderGuildName = guilds[attackerGuildId].guildName;
+                DefenderGuildName = Guilds[attackerGuildId].guildName;
                 SendSystemAnnounce(string.Format(mapInfo.attackerWinMessage, DefenderGuildName));
                 GiveGuildBattleRewardTo(DefenderGuildId);
                 ExpelLoserGuilds(DefenderGuildId);
@@ -148,14 +148,14 @@ namespace MultiplayerARPG
         private void ExpelLoserGuilds(int winnerGuildId)
         {
             // Teleport other guild characters to other map (for now, teleport to respawn position)
-            List<BasePlayerCharacterEntity> otherGuildCharacters = new List<BasePlayerCharacterEntity>(GetPlayerCharacters());
+            List<IPlayerCharacterData> otherGuildCharacters = new List<IPlayerCharacterData>(GetPlayerCharacters());
             for (int i = 0; i < otherGuildCharacters.Count; ++i)
             {
                 if (otherGuildCharacters[i].GuildId <= 0 ||
                     otherGuildCharacters[i].GuildId != winnerGuildId)
                 {
                     WarpCharacter(WarpPortalType.Default,
-                        otherGuildCharacters[i],
+                        otherGuildCharacters[i] as BasePlayerCharacterEntity,
                         otherGuildCharacters[i].RespawnMapName,
                         otherGuildCharacters[i].RespawnPosition,
                         false, Vector3.zero);
