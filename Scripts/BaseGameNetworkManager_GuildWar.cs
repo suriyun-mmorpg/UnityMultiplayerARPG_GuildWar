@@ -133,10 +133,11 @@ namespace MultiplayerARPG
         {
             GuildWarMapInfo mapInfo = CurrentMapInfo as GuildWarMapInfo;
             LastOccupyTime = System.DateTime.Now;
-            if (attackerGuildId > 0)
+            GuildData guild;
+            if (attackerGuildId > 0 && ServerGuildHandlers.TryGetGuild(attackerGuildId, out guild))
             {
                 DefenderGuildId = attackerGuildId;
-                DefenderGuildName = Guilds[attackerGuildId].guildName;
+                DefenderGuildName = guild.guildName;
                 SendSystemAnnounce(string.Format(mapInfo.attackerWinMessage, DefenderGuildName));
                 GiveGuildBattleRewardTo(DefenderGuildId);
                 ExpelLoserGuilds(DefenderGuildId);
@@ -148,7 +149,7 @@ namespace MultiplayerARPG
         private void ExpelLoserGuilds(int winnerGuildId)
         {
             // Teleport other guild characters to other map (for now, teleport to respawn position)
-            List<IPlayerCharacterData> otherGuildCharacters = new List<IPlayerCharacterData>(GetPlayerCharacters());
+            List<IPlayerCharacterData> otherGuildCharacters = new List<IPlayerCharacterData>(ServerPlayerCharacterHandlers.GetPlayerCharacters());
             for (int i = 0; i < otherGuildCharacters.Count; ++i)
             {
                 if (otherGuildCharacters[i].GuildId <= 0 ||
