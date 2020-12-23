@@ -149,7 +149,7 @@ namespace MultiplayerARPG
         private void ExpelLoserGuilds(int winnerGuildId)
         {
             // Teleport other guild characters to other map (for now, teleport to respawn position)
-            List<IPlayerCharacterData> otherGuildCharacters = new List<IPlayerCharacterData>(ServerPlayerCharacterHandlers.GetPlayerCharacters());
+            List<IPlayerCharacterData> otherGuildCharacters = new List<IPlayerCharacterData>(ServerUserHandlers.GetPlayerCharacters());
             for (int i = 0; i < otherGuildCharacters.Count; ++i)
             {
                 if (otherGuildCharacters[i].GuildId <= 0 ||
