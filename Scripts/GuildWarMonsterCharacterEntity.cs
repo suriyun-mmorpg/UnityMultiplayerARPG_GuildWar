@@ -1,32 +1,42 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace MultiplayerARPG.MMO.GuildWar
+﻿namespace MultiplayerARPG.MMO.GuildWar
 {
     public class GuildWarMonsterCharacterEntity : MonsterCharacterEntity
     {
-        public int GetGuildId(IGameEntity entity)
+        public override EntityInfo GetInfo()
         {
-            int guildId = 0;
-            if (entity != null)
+            return new EntityInfo()
             {
-                BasePlayerCharacterEntity playerCharacter = entity.Entity as BasePlayerCharacterEntity;
-                BaseMonsterCharacterEntity monsterCharacter = entity.Entity as BaseMonsterCharacterEntity;
-                if (monsterCharacter != null && monsterCharacter.IsSummoned &&
-                    monsterCharacter.Summoner is BasePlayerCharacterEntity)
-                    playerCharacter = monsterCharacter.Summoner as BasePlayerCharacterEntity;
-                if (playerCharacter != null)
-                    guildId = (entity.Entity as BasePlayerCharacterEntity).GuildId;
-            }
-            return guildId;
+                type = EntityTypes.GuildWarMonster,
+                id = Id,
+                dataId = DataId,
+                isInSafeArea = IsInSafeArea,
+                summonerInfo = Summoner != null ? Summoner.GetInfo() : default,
+            };
         }
 
-        public override bool CanReceiveDamageFrom(IGameEntity attacker)
+        public int GetGuildId(EntityInfo entityInfo)
         {
-            if (!base.CanReceiveDamageFrom(attacker))
+            if (!string.IsNullOrEmpty(entityInfo.id))
+            {
+                if (entityInfo.type == EntityTypes.Player)
+                {
+                    return entityInfo.guildId;
+                }
+                else if (entityInfo.type == EntityTypes.Monster &&
+                    entityInfo.summonerInfo != null &&
+                    entityInfo.summonerInfo.type == EntityTypes.Player)
+                {
+                    return entityInfo.summonerInfo.guildId;
+                }
+            }
+            return 0;
+        }
+
+        public override bool CanReceiveDamageFrom(EntityInfo instigator)
+        {
+            if (!base.CanReceiveDamageFrom(instigator))
                 return false;
-            return CurrentGameManager.GuildWarRunning && GetGuildId(attacker) > 0 && GetGuildId(attacker) != CurrentGameManager.DefenderGuildId;
+            return CurrentGameManager.GuildWarRunning && GetGuildId(instigator) > 0 && GetGuildId(instigator) != CurrentGameManager.DefenderGuildId;
         }
     }
 }

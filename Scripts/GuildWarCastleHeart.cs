@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace MultiplayerARPG.MMO.GuildWar
+﻿namespace MultiplayerARPG.MMO.GuildWar
 {
     public class GuildWarCastleHeart : GuildWarMonsterCharacterEntity
     {
@@ -11,7 +7,7 @@ namespace MultiplayerARPG.MMO.GuildWar
             base.Killed(lastAttacker);
 
             // Get winner guild id
-            int attackerGuildId = GetGuildId(lastAttacker);
+            int attackerGuildId = GetGuildId(lastAttacker.GetInfo());
             BaseGameNetworkManager.Singleton.CastleOccupied(attackerGuildId);
         }
     }
