@@ -7,10 +7,11 @@
             return new EntityInfo()
             {
                 type = EntityTypes.GuildWarMonster,
-                id = Id,
+                objectId = ObjectId,
+                id = ObjectId.ToString(),
                 dataId = DataId,
                 isInSafeArea = IsInSafeArea,
-                summonerInfo = Summoner != null ? Summoner.GetInfo() : default,
+                summonerInfo = Summoner != null ? Summoner.GetInfo() : null,
             };
         }
 
