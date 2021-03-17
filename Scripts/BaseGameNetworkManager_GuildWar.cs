@@ -63,7 +63,7 @@ namespace MultiplayerARPG
         {
             if (!IsServer)
                 return;
-            ServerSendPacket(connectionId, DeliveryMethod.ReliableOrdered, guildWarStatusMsgType, (writer) =>
+            ServerSendPacket(connectionId, 0, DeliveryMethod.ReliableOrdered, guildWarStatusMsgType, (writer) =>
             {
                 writer.Put(GuildWarRunning);
                 writer.Put(DefenderGuildId);
