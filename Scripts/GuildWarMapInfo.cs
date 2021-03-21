@@ -89,6 +89,15 @@ namespace MultiplayerARPG.MMO.GuildWar
             }
         }
 
+        public override void PrepareRelatesData()
+        {
+            base.PrepareRelatesData();
+            GameInstance.AddItems(participantRewardItems);
+            GameInstance.AddItems(winRewardItems);
+            GameInstance.AddCurrencies(participantRewardCurrencies);
+            GameInstance.AddCurrencies(winRewardCurrencies);
+        }
+
         protected override bool IsPlayerAlly(BasePlayerCharacterEntity playerCharacter, EntityInfo targetEntity)
         {
             if (string.IsNullOrEmpty(targetEntity.id))
