@@ -242,6 +242,8 @@ namespace MultiplayerARPG
 
         private void OnRegisterPlayerCharacter_GuildWar(long connectionId, BasePlayerCharacterEntity playerCharacter)
         {
+            if (playerCharacter.GuildId > 0)
+                return;
             participantGuildIds[playerCharacter.UserId] = new GuildWarParticipant()
             {
                 userId = playerCharacter.UserId,
