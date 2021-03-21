@@ -38,6 +38,18 @@ namespace MultiplayerARPG.MMO.GuildWar
         [Tooltip("{0} is guild name")]
         public string attackerWinMessage = "{0} can occupy the castle and win this round.";
 
+        [Header("Rewarding")]
+        public string participantMailTitle;
+        public string participantMailContent;
+        public int participantRewardGold;
+        public CurrencyAmount[] participantRewardCurrencies;
+        public ItemAmount[] participantRewardItems;
+        public string winMailTitle;
+        public string winMailContent;
+        public int winRewardGold;
+        public CurrencyAmount[] winRewardCurrencies;
+        public ItemAmount[] winRewardItems;
+
         public override bool AutoRespawnWhenDead { get { return true; } }
         public override bool SaveCurrentMapPosition { get { return false; } }
 

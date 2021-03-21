@@ -12,6 +12,10 @@ namespace MultiplayerARPG
         [Header("Guild War")]
         public ushort guildWarStatusMsgType = 200;
         public bool recoverMonstersWhenRoundEnd = true;
+        public string guildWarMailSenderId = "GUILDWAR";
+        public string guildWarMailSenderName = "Guild War Manager";
+
+        private readonly Dictionary<string, GuildWarParticipant> participantGuildIds = new Dictionary<string, GuildWarParticipant>();
 
         public bool GuildWarRunning { get; private set; }
         public System.DateTime LastOccupyTime { get; private set; }
@@ -29,6 +33,7 @@ namespace MultiplayerARPG
         {
             CancelInvoke(nameof(Update_GuildWar));
             InvokeRepeating(nameof(Update_GuildWar), 1, 1);
+            onRegisterCharacter += OnRegisterPlayerCharacter_GuildWar;
         }
 
         [DevExtMethods("OnPeerConnected")]
@@ -47,6 +52,7 @@ namespace MultiplayerARPG
         protected void Clean_GuildWar()
         {
             CancelInvoke(nameof(Update_GuildWar));
+            onRegisterCharacter -= OnRegisterPlayerCharacter_GuildWar;
         }
 
         public void SendGuildWarStatus()
@@ -107,6 +113,7 @@ namespace MultiplayerARPG
                     GiveGuildBattleRewardTo(DefenderGuildId);
                     ExpelLoserGuilds(DefenderGuildId);
                     RegenerateMonsters();
+                    participantGuildIds.Clear();
                 }
                 SendGuildWarStatus();
             }
@@ -123,6 +130,7 @@ namespace MultiplayerARPG
                         GiveGuildBattleRewardTo(DefenderGuildId);
                         ExpelLoserGuilds(DefenderGuildId);
                         RegenerateMonsters();
+                        participantGuildIds.Clear();
                     }
                     SendGuildWarStatus();
                 }
@@ -142,6 +150,7 @@ namespace MultiplayerARPG
                 GiveGuildBattleRewardTo(DefenderGuildId);
                 ExpelLoserGuilds(DefenderGuildId);
                 RegenerateMonsters();
+                participantGuildIds.Clear();
             }
             SendGuildWarStatus();
         }
@@ -181,9 +190,63 @@ namespace MultiplayerARPG
             }
         }
 
-        private void GiveGuildBattleRewardTo(int guildId)
+        private void GiveGuildBattleRewardTo(int winnerGuildId)
         {
-            // TODO: May send reward to player's mail box which is not implemented yet.
+            GuildWarMapInfo mapInfo = CurrentMapInfo as GuildWarMapInfo;
+            string mailTitle;
+            string mailContent;
+            int rewardGold;
+            CurrencyAmount[] rewardCurrencies;
+            ItemAmount[] rewardItems;
+            Mail tempMail;
+            foreach (GuildWarParticipant participant in participantGuildIds.Values)
+            {
+                if (participant.guildId == winnerGuildId)
+                {
+                    mailTitle = mapInfo.winMailTitle;
+                    mailContent = mapInfo.winMailContent;
+                    rewardGold = mapInfo.winRewardGold;
+                    rewardCurrencies = mapInfo.winRewardCurrencies;
+                    rewardItems = mapInfo.winRewardItems;
+                }
+                else
+                {
+                    mailTitle = mapInfo.participantMailTitle;
+                    mailContent = mapInfo.participantMailContent;
+                    rewardGold = mapInfo.participantRewardGold;
+                    rewardCurrencies = mapInfo.participantRewardCurrencies;
+                    rewardItems = mapInfo.participantRewardItems;
+                }
+                tempMail = new Mail()
+                {
+                    SenderId = guildWarMailSenderId,
+                    SenderName = guildWarMailSenderName,
+                    ReceiverId = participant.userId,
+                    Title = mailTitle,
+                    Content = mailContent,
+                    Gold = rewardGold,
+                };
+                foreach (CurrencyAmount currencyAmount in rewardCurrencies)
+                {
+                    if (currencyAmount.currency == null) continue;
+                    tempMail.Currencies[currencyAmount.currency.DataId] = currencyAmount.amount;
+                }
+                foreach (ItemAmount itemAmount in rewardItems)
+                {
+                    if (itemAmount.item == null) continue;
+                    tempMail.Items[itemAmount.item.DataId] = itemAmount.amount;
+                }
+                ServerMailHandlers.SendMail(tempMail);
+            }
+        }
+
+        private void OnRegisterPlayerCharacter_GuildWar(long connectionId, BasePlayerCharacterEntity playerCharacter)
+        {
+            participantGuildIds[playerCharacter.UserId] = new GuildWarParticipant()
+            {
+                userId = playerCharacter.UserId,
+                guildId = playerCharacter.GuildId,
+            };
         }
     }
 }
