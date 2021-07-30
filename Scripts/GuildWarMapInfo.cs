@@ -116,10 +116,10 @@ namespace MultiplayerARPG.MMO.GuildWar
             if (targetEntity.Type == EntityTypes.Monster)
             {
                 // If this character is summoner so it is ally
-                if (targetEntity.Summoner.HasValue)
+                if (targetEntity.HasSummoner)
                 {
                     // If summoned by someone, will have same allies with summoner
-                    return playerCharacter.IsAlly(targetEntity.Summoner.Value);
+                    return playerCharacter.IsAlly(targetEntity.Summoner);
                 }
                 else
                 {
@@ -146,10 +146,10 @@ namespace MultiplayerARPG.MMO.GuildWar
                 if (targetEntity.Type == EntityTypes.Monster)
                 {
                     // If this character is summoner so it is ally
-                    if (targetEntity.Summoner.HasValue)
+                    if (targetEntity.HasSummoner)
                     {
                         // If summoned by someone, will have same allies with summoner
-                        return monsterCharacter.IsAlly(targetEntity.Summoner.Value);
+                        return monsterCharacter.IsAlly(targetEntity.Summoner);
                     }
                     else
                     {
@@ -176,8 +176,8 @@ namespace MultiplayerARPG.MMO.GuildWar
             if (targetEntity.Type == EntityTypes.Monster)
             {
                 // If another monster has same allyId so it is ally
-                if (targetEntity.Summoner.HasValue)
-                    return monsterCharacter.IsAlly(targetEntity.Summoner.Value);
+                if (targetEntity.HasSummoner)
+                    return monsterCharacter.IsAlly(targetEntity.Summoner);
                 return GameInstance.MonsterCharacters[targetEntity.DataId].AllyId == monsterCharacter.CharacterDatabase.AllyId;
             }
 
@@ -202,10 +202,10 @@ namespace MultiplayerARPG.MMO.GuildWar
             if (targetEntity.Type == EntityTypes.Monster)
             {
                 // If this character is not summoner so it is enemy
-                if (targetEntity.Summoner.HasValue)
+                if (targetEntity.HasSummoner)
                 {
                     // If summoned by someone, will have same enemies with summoner
-                    return playerCharacter.IsEnemy(targetEntity.Summoner.Value);
+                    return playerCharacter.IsEnemy(targetEntity.Summoner);
                 }
                 else
                 {
@@ -232,10 +232,10 @@ namespace MultiplayerARPG.MMO.GuildWar
                 if (targetEntity.Type == EntityTypes.Monster)
                 {
                     // If this character is not summoner so it is enemy
-                    if (targetEntity.Summoner.HasValue)
+                    if (targetEntity.HasSummoner)
                     {
                         // If summoned by someone, will have same enemies with summoner
-                        return monsterCharacter.IsEnemy(targetEntity.Summoner.Value);
+                        return monsterCharacter.IsEnemy(targetEntity.Summoner);
                     }
                     else
                     {

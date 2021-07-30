@@ -23,10 +23,10 @@
                     return entityInfo.GuildId;
                 }
                 else if (entityInfo.Type == EntityTypes.Monster &&
-                    entityInfo.Summoner.HasValue &&
-                    entityInfo.Summoner.Value.Type == EntityTypes.Player)
+                    entityInfo.HasSummoner &&
+                    entityInfo.SummonerType == EntityTypes.Player)
                 {
-                    return entityInfo.Summoner.Value.GuildId;
+                    return entityInfo.SummonerGuildId;
                 }
             }
             return 0;
