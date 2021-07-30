@@ -4,30 +4,29 @@
     {
         public override EntityInfo GetInfo()
         {
-            return new EntityInfo()
-            {
-                type = EntityTypes.GuildWarMonster,
-                objectId = ObjectId,
-                id = ObjectId.ToString(),
-                dataId = DataId,
-                isInSafeArea = IsInSafeArea,
-                summonerInfo = Summoner != null ? Summoner.GetInfo() : null,
-            };
+            return new EntityInfo(
+                EntityTypes.GuildWarMonster,
+                ObjectId,
+                ObjectId.ToString(),
+                DataId,
+                0, 0, 0,
+                IsInSafeArea,
+                Summoner);
         }
 
         public int GetGuildId(EntityInfo entityInfo)
         {
-            if (!string.IsNullOrEmpty(entityInfo.id))
+            if (!string.IsNullOrEmpty(entityInfo.Id))
             {
-                if (entityInfo.type == EntityTypes.Player)
+                if (entityInfo.Type == EntityTypes.Player)
                 {
-                    return entityInfo.guildId;
+                    return entityInfo.GuildId;
                 }
-                else if (entityInfo.type == EntityTypes.Monster &&
-                    entityInfo.summonerInfo != null &&
-                    entityInfo.summonerInfo.type == EntityTypes.Player)
+                else if (entityInfo.Type == EntityTypes.Monster &&
+                    entityInfo.Summoner.HasValue &&
+                    entityInfo.Summoner.Value.Type == EntityTypes.Player)
                 {
-                    return entityInfo.summonerInfo.guildId;
+                    return entityInfo.Summoner.Value.GuildId;
                 }
             }
             return 0;
