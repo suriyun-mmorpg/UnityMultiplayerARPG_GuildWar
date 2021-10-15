@@ -90,7 +90,7 @@ namespace MultiplayerARPG
             GuildWarMapInfo mapInfo = CurrentMapInfo as GuildWarMapInfo;
             if (!GuildWarRunning && mapInfo.IsOn)
             {
-                SendSystemAnnounce(mapInfo.eventStartedMessage);
+                ServerSendSystemAnnounce(mapInfo.eventStartedMessage);
                 DefenderGuildId = 0;
                 DefenderGuildName = string.Empty;
                 ExpelLoserGuilds(DefenderGuildId);
@@ -101,11 +101,11 @@ namespace MultiplayerARPG
 
             if (GuildWarRunning && !mapInfo.IsOn)
             {
-                SendSystemAnnounce(mapInfo.eventEndedMessage);
+                ServerSendSystemAnnounce(mapInfo.eventEndedMessage);
                 GuildWarRunning = false;
                 if (DefenderGuildId > 0)
                 {
-                    SendSystemAnnounce(string.Format(mapInfo.defenderWinMessage, DefenderGuildName));
+                    ServerSendSystemAnnounce(string.Format(mapInfo.defenderWinMessage, DefenderGuildName));
                     GiveGuildBattleRewardTo(DefenderGuildId);
                     ExpelLoserGuilds(DefenderGuildId);
                     RegenerateMonsters();
@@ -117,11 +117,11 @@ namespace MultiplayerARPG
             {
                 if ((System.DateTime.Now - LastOccupyTime).TotalMinutes >= mapInfo.battleDuration)
                 {
-                    SendSystemAnnounce(mapInfo.roundEndedMessage);
+                    ServerSendSystemAnnounce(mapInfo.roundEndedMessage);
                     LastOccupyTime = System.DateTime.Now;
                     if (DefenderGuildId > 0)
                     {
-                        SendSystemAnnounce(string.Format(mapInfo.defenderWinMessage, DefenderGuildName));
+                        ServerSendSystemAnnounce(string.Format(mapInfo.defenderWinMessage, DefenderGuildName));
                         GiveGuildBattleRewardTo(DefenderGuildId);
                         ExpelLoserGuilds(DefenderGuildId);
                         RegenerateMonsters();
@@ -140,7 +140,7 @@ namespace MultiplayerARPG
             {
                 DefenderGuildId = attackerGuildId;
                 DefenderGuildName = guild.guildName;
-                SendSystemAnnounce(string.Format(mapInfo.attackerWinMessage, DefenderGuildName));
+                ServerSendSystemAnnounce(string.Format(mapInfo.attackerWinMessage, DefenderGuildName));
                 GiveGuildBattleRewardTo(DefenderGuildId);
                 ExpelLoserGuilds(DefenderGuildId);
                 RegenerateMonsters();
