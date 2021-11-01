@@ -228,7 +228,7 @@ namespace MultiplayerARPG
                 foreach (ItemAmount itemAmount in rewardItems)
                 {
                     if (itemAmount.item == null) continue;
-                    tempMail.Items[itemAmount.item.DataId] = itemAmount.amount;
+                    tempMail.Items.Add(CharacterItem.Create(itemAmount.item, 1, itemAmount.amount));
                 }
                 ServerMailHandlers.SendMail(tempMail);
             }
