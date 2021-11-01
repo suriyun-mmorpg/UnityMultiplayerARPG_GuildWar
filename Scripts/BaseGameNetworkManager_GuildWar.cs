@@ -223,7 +223,7 @@ namespace MultiplayerARPG
                 foreach (CurrencyAmount currencyAmount in rewardCurrencies)
                 {
                     if (currencyAmount.currency == null) continue;
-                    tempMail.Currencies[currencyAmount.currency.DataId] = currencyAmount.amount;
+                    tempMail.Currencies.Add(CharacterCurrency.Create(currencyAmount.currency.DataId, currencyAmount.amount));
                 }
                 foreach (ItemAmount itemAmount in rewardItems)
                 {
