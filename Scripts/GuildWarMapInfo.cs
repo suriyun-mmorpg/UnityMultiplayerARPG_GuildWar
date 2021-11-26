@@ -17,6 +17,7 @@ namespace MultiplayerARPG.MMO.GuildWar
             public byte endTime;
         }
 
+        [Category("Guild War Settings")]
         [Header("Event time settings")]
         public EventTime sunday;
         public EventTime monday;
