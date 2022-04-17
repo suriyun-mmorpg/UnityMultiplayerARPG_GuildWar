@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace MultiplayerARPG.MMO.GuildWar
 {
-    [CreateAssetMenu(fileName = "Guild War Map Info", menuName = "Create GameData/Guild War Map Info", order = -4799)]
+    [CreateAssetMenu(fileName = GameDataMenuConsts.GUILD_WAR_MAP_INFO_FILE, menuName = GameDataMenuConsts.GUILD_WAR_MAP_INFO_MENU, order = GameDataMenuConsts.GUILD_WAR_MAP_INFO_ORDER)]
     public class GuildWarMapInfo : BaseMapInfo
     {
         [Serializable]
