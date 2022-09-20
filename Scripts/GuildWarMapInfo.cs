@@ -161,7 +161,7 @@ namespace MultiplayerARPG.MMO.GuildWar
                 return true;
             }
 
-            if (monsterCharacter.IsSummoned)
+            if (monsterCharacter.IsSummonedAndSummonerExisted)
             {
                 // If summoned by someone, will have same allies with summoner
                 return targetEntity.Id.Equals(monsterCharacter.Summoner.Id) || monsterCharacter.Summoner.IsAlly(targetEntity);
@@ -247,7 +247,7 @@ namespace MultiplayerARPG.MMO.GuildWar
                 return false;
             }
 
-            if (monsterCharacter.IsSummoned)
+            if (monsterCharacter.IsSummonedAndSummonerExisted)
             {
                 // If summoned by someone, will have same enemies with summoner
                 return targetEntity.Id.Equals(monsterCharacter.Summoner.Id) && monsterCharacter.Summoner.IsEnemy(targetEntity);
