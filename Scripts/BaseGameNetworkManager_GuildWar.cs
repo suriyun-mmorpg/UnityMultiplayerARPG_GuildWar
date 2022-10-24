@@ -20,8 +20,8 @@ namespace MultiplayerARPG
         public int DefenderGuildId { get; private set; }
         public string DefenderGuildName { get; private set; }
 
-        [DevExtMethods("RegisterClientMessages")]
-        protected void RegisterClientMessages_GuildWar()
+        [DevExtMethods("RegisterMessages")]
+        protected void RegisterMessages_GuildWar()
         {
             RegisterClientMessage(guildWarStatusMsgType, HandleGuildWarStatusAtClient);
         }
