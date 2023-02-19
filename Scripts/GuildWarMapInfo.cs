@@ -247,14 +247,19 @@ namespace MultiplayerARPG.MMO.GuildWar
                 return false;
             }
 
+            // If summoned by someone, will have same enemies with summoner
             if (monsterCharacter.IsSummonedAndSummonerExisted)
-            {
-                // If summoned by someone, will have same enemies with summoner
-                return targetEntity.Id.Equals(monsterCharacter.Summoner.Id) && monsterCharacter.Summoner.IsEnemy(targetEntity);
-            }
+                return monsterCharacter.Summoner.IsEnemy(targetEntity);
 
             // Attack only player by default
-            return targetEntity.Type == EntityTypes.Player;
+            if (targetEntity.Type == EntityTypes.Player)
+                return true;
+
+            // Attack monster which its summoner is enemy
+            if (targetEntity.Type == EntityTypes.Monster && targetEntity.TryGetEntity(out BaseMonsterCharacterEntity targetMonster) && targetMonster.IsSummonedAndSummonerExisted)
+                return monsterCharacter.IsEnemy(targetEntity.Summoner);
+
+            return false;
         }
     }
 }
