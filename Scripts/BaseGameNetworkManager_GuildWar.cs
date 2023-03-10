@@ -160,7 +160,7 @@ namespace MultiplayerARPG
                     WarpCharacter(WarpPortalType.Default,
                         otherGuildCharacters[i] as BasePlayerCharacterEntity,
                         otherGuildCharacters[i].RespawnMapName,
-                        otherGuildCharacters[i].RespawnPosition,
+                        new Vector3(otherGuildCharacters[i].RespawnPositionX, otherGuildCharacters[i].RespawnPositionY, otherGuildCharacters[i].RespawnPositionZ),
                         false, Vector3.zero);
                 }
             }
