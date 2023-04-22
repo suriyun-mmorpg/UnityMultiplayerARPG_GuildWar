@@ -32,6 +32,27 @@ namespace MultiplayerARPG
         public string guildWarServiceUrlForClient = "http://localhost:9801";
         public string guildWarSecretKey = "secret";
 
+        private GuildWarRestClient _guildWarRestClientForClient;
+        public GuildWarRestClient GuildWarRestClientForClient
+        {
+            get
+            {
+                if (_guildWarRestClientForClient == null)
+                    _guildWarRestClientForClient = gameObject.AddComponent<GuildWarRestClient>();
+                return _guildWarRestClientForClient;
+            }
+        }
+        private GuildWarRestClient _guildWarRestClientForServer;
+        public GuildWarRestClient GuildWarRestClientForServer
+        {
+            get
+            {
+                if (_guildWarRestClientForServer == null)
+                    _guildWarRestClientForServer = gameObject.AddComponent<GuildWarRestClient>();
+                return _guildWarRestClientForServer;
+            }
+        }
+
         public bool GuildWarRunning { get; private set; }
         public System.DateTime LastOccupyTime { get; private set; }
         public int DefenderGuildId { get; private set; }
@@ -62,6 +83,12 @@ namespace MultiplayerARPG
         private void OnServerOnlineSceneLoaded_GuildWar()
         {
             SendGuildWarStatus();
+        }
+
+        [DevExtMethods("OnClientOnlineSceneLoaded")]
+        private void OnClientOnlineSceneLoaded_GuildWar()
+        {
+            GetGuildWarClientConfig(null);
         }
 
         [DevExtMethods("Clean")]
@@ -260,7 +287,17 @@ namespace MultiplayerARPG
         {
             if (!IsClientConnected)
                 return;
-            ClientSendRequest(guildWarMessageTypes.getClientConfigRequestType, EmptyMessage.Value, callback);
+            ClientSendRequest(guildWarMessageTypes.getClientConfigRequestType, EmptyMessage.Value, (ResponseHandlerData responseHandler, AckResponseCode responseCode, ResponseClientConfigMessage response) =>
+            {
+                if (responseCode == AckResponseCode.Success)
+                {
+                    GuildWarRestClientForClient.apiUrl = response.serviceUrl;
+                }
+                if (callback != null)
+                {
+                    callback.Invoke(responseHandler, responseCode, response);
+                }
+            });
         }
 
         private async UniTaskVoid HandleGetGuildWarClientConfigAtServer(RequestHandlerData requestHandler, EmptyMessage request,
