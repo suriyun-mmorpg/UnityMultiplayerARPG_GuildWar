@@ -4,6 +4,9 @@ using MultiplayerARPG.MMO.GuildWar;
 using LiteNetLibManager;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using MultiplayerARPG.GuildWar;
+using UnityRestClient;
+using Cysharp.Threading.Tasks;
 
 namespace MultiplayerARPG
 {
@@ -39,6 +42,7 @@ namespace MultiplayerARPG
         private void RegisterMessages_GuildWar()
         {
             RegisterClientMessage(guildWarMessageTypes.statusMsgType, HandleGuildWarStatusAtClient);
+            RegisterRequestToServer<EmptyMessage, ResponseClientConfigMessage>(guildWarMessageTypes.getClientConfigRequestType, HandleGetGuildWarClientConfigAtServer);
         }
 
         [DevExtMethods("OnStartServer")]
@@ -250,6 +254,32 @@ namespace MultiplayerARPG
                 }
                 ServerMailHandlers.SendMail(tempMail);
             }
+        }
+
+        public void GetGuildWarClientConfig(ResponseDelegate<ResponseClientConfigMessage> callback)
+        {
+            if (!IsClientConnected)
+                return;
+            ClientSendRequest(guildWarMessageTypes.getClientConfigRequestType, EmptyMessage.Value, callback);
+        }
+
+        private async UniTaskVoid HandleGetGuildWarClientConfigAtServer(RequestHandlerData requestHandler, EmptyMessage request,
+            RequestProceedResultDelegate<ResponseClientConfigMessage> result)
+        {
+            await UniTask.Yield();
+            if (!ServerUserHandlers.TryGetPlayerCharacter(requestHandler.ConnectionId, out IPlayerCharacterData playerCharacter))
+            {
+                // Do nothing, player character is not enter the game yet.
+                result.InvokeError(new ResponseClientConfigMessage()
+                {
+                    message = UITextKeys.UI_ERROR_NOT_LOGGED_IN,
+                });
+                return;
+            }
+            result.InvokeSuccess(new ResponseClientConfigMessage()
+            {
+                serviceUrl = guildWarServiceUrlForClient,
+            });
         }
     }
 }
