@@ -36,13 +36,13 @@ namespace MultiplayerARPG.GuildWar
             return Get<OccupyListResponse>(GetUrl(apiUrl, $"/occupy-history-by-map/{mapName}"), queries, secretKey);
         }
 
-        public Task<Result<OccupyData>> GetOccupy(int id)
+        public Task<Result<OccupyData>> GetOccupy(string mapName)
         {
             Dictionary<string, object> queries = new Dictionary<string, object>();
-            return Get<OccupyData>(GetUrl(apiUrl, $"/{id}"), queries, secretKey);
+            return Get<OccupyData>(GetUrl(apiUrl, $"/{mapName}"), queries, secretKey);
         }
 
-        public Task<Result> CreateOccupy(string mapName, int guildId, string guildName, string guildOptions)
+        public Task<Result> CreateOccupy(string mapName, int guildId, string guildName, string guildOptions, bool attackerWin)
         {
             Dictionary<string, object> form = new Dictionary<string, object>
             {
@@ -50,6 +50,7 @@ namespace MultiplayerARPG.GuildWar
                 { nameof(guildId), guildId },
                 { nameof(guildName), guildName },
                 { nameof(guildOptions), guildOptions },
+                { nameof(attackerWin), attackerWin }
             };
             return Post(GetUrl(apiUrl, "/internal/occupy"), form, secretKey);
         }

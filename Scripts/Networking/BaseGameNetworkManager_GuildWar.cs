@@ -69,6 +69,8 @@ namespace MultiplayerARPG
         [DevExtMethods("OnStartServer")]
         protected void OnStartServer_GuildWar()
         {
+            GuildWarRestClientForServer.apiUrl = guildWarServiceUrl;
+            GuildWarRestClientForServer.secretKey = guildWarSecretKey;
             CancelInvoke(nameof(Update_GuildWar));
             InvokeRepeating(nameof(Update_GuildWar), 1, 1);
         }
@@ -133,9 +135,19 @@ namespace MultiplayerARPG
             if (!GuildWarRunning && mapInfo.IsOn)
             {
                 ServerSendSystemAnnounce(mapInfo.eventStartedMessage);
-                DefenderGuildId = 0;
-                DefenderGuildName = string.Empty;
-                DefenderGuildOptions = string.Empty;
+                RestClient.Result<OccupyData> occupy = await GuildWarRestClientForServer.GetOccupy(mapInfo.Id);
+                if (!occupy.IsError())
+                {
+                    DefenderGuildId = occupy.Content.guildId;
+                    DefenderGuildName = occupy.Content.guildName;
+                    DefenderGuildOptions = occupy.Content.guildOptions;
+                }
+                else
+                {
+                    DefenderGuildId = 0;
+                    DefenderGuildName = string.Empty;
+                    DefenderGuildOptions = string.Empty;
+                }
                 ExpelLoserGuilds(DefenderGuildId);
                 RegenerateMonsters();
                 // TODO: Load occupied guild
@@ -153,7 +165,7 @@ namespace MultiplayerARPG
                     GiveGuildBattleRewardTo(DefenderGuildId);
                     ExpelLoserGuilds(DefenderGuildId);
                     RegenerateMonsters();
-                    await GuildWarRestClientForServer.CreateOccupy(mapInfo.Id, DefenderGuildId, DefenderGuildName, DefenderGuildOptions);
+                    await GuildWarRestClientForServer.CreateOccupy(mapInfo.Id, DefenderGuildId, DefenderGuildName, DefenderGuildOptions, false);
                 }
                 SendGuildWarStatus();
             }
@@ -170,7 +182,7 @@ namespace MultiplayerARPG
                         GiveGuildBattleRewardTo(DefenderGuildId);
                         ExpelLoserGuilds(DefenderGuildId);
                         RegenerateMonsters();
-                        await GuildWarRestClientForServer.CreateOccupy(mapInfo.Id, DefenderGuildId, DefenderGuildName, DefenderGuildOptions);
+                        await GuildWarRestClientForServer.CreateOccupy(mapInfo.Id, DefenderGuildId, DefenderGuildName, DefenderGuildOptions, false);
                     }
                     SendGuildWarStatus();
                 }
@@ -190,7 +202,7 @@ namespace MultiplayerARPG
                 GiveGuildBattleRewardTo(DefenderGuildId);
                 ExpelLoserGuilds(DefenderGuildId);
                 RegenerateMonsters();
-                await GuildWarRestClientForServer.CreateOccupy(mapInfo.Id, DefenderGuildId, DefenderGuildName, DefenderGuildOptions);
+                await GuildWarRestClientForServer.CreateOccupy(mapInfo.Id, DefenderGuildId, DefenderGuildName, DefenderGuildOptions, true);
             }
             SendGuildWarStatus();
         }
