@@ -124,7 +124,7 @@ namespace MultiplayerARPG
             DefenderGuildOptions = messageHandler.Reader.GetString();
         }
 
-        public void Update_GuildWar()
+        public async void Update_GuildWar()
         {
             if (!IsServer || CurrentMapInfo == null || !(CurrentMapInfo is GuildWarMapInfo))
                 return;
@@ -138,6 +138,7 @@ namespace MultiplayerARPG
                 DefenderGuildOptions = string.Empty;
                 ExpelLoserGuilds(DefenderGuildId);
                 RegenerateMonsters();
+                // TODO: Load occupied guild
                 GuildWarRunning = true;
                 SendGuildWarStatus();
             }
@@ -152,6 +153,7 @@ namespace MultiplayerARPG
                     GiveGuildBattleRewardTo(DefenderGuildId);
                     ExpelLoserGuilds(DefenderGuildId);
                     RegenerateMonsters();
+                    await GuildWarRestClientForServer.CreateOccupy(mapInfo.Id, DefenderGuildId, DefenderGuildName, DefenderGuildOptions);
                 }
                 SendGuildWarStatus();
             }
@@ -168,13 +170,14 @@ namespace MultiplayerARPG
                         GiveGuildBattleRewardTo(DefenderGuildId);
                         ExpelLoserGuilds(DefenderGuildId);
                         RegenerateMonsters();
+                        await GuildWarRestClientForServer.CreateOccupy(mapInfo.Id, DefenderGuildId, DefenderGuildName, DefenderGuildOptions);
                     }
                     SendGuildWarStatus();
                 }
             }
         }
 
-        public void CastleOccupied(int attackerGuildId)
+        public async void CastleOccupied(int attackerGuildId)
         {
             GuildWarMapInfo mapInfo = CurrentMapInfo as GuildWarMapInfo;
             LastOccupyTime = System.DateTime.Now;
@@ -187,6 +190,7 @@ namespace MultiplayerARPG
                 GiveGuildBattleRewardTo(DefenderGuildId);
                 ExpelLoserGuilds(DefenderGuildId);
                 RegenerateMonsters();
+                await GuildWarRestClientForServer.CreateOccupy(mapInfo.Id, DefenderGuildId, DefenderGuildName, DefenderGuildOptions);
             }
             SendGuildWarStatus();
         }
