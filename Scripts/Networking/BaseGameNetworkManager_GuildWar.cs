@@ -60,39 +60,39 @@ namespace MultiplayerARPG
         public string DefenderGuildOptions { get; private set; }
 
         [DevExtMethods("RegisterMessages")]
-        private void RegisterMessages_GuildWar()
+        protected void RegisterMessages_GuildWar()
         {
             RegisterClientMessage(guildWarMessageTypes.statusMsgType, HandleGuildWarStatusAtClient);
             RegisterRequestToServer<EmptyMessage, ResponseClientConfigMessage>(guildWarMessageTypes.getClientConfigRequestType, HandleGetGuildWarClientConfigAtServer);
         }
 
         [DevExtMethods("OnStartServer")]
-        private void OnStartServer_GuildWar()
+        protected void OnStartServer_GuildWar()
         {
             CancelInvoke(nameof(Update_GuildWar));
             InvokeRepeating(nameof(Update_GuildWar), 1, 1);
         }
 
         [DevExtMethods("OnPeerConnected")]
-        private void OnPeerConnected_GuildWar(long connectionId)
+        protected void OnPeerConnected_GuildWar(long connectionId)
         {
             SendGuildWarStatus(connectionId);
         }
 
         [DevExtMethods("OnServerOnlineSceneLoaded")]
-        private void OnServerOnlineSceneLoaded_GuildWar()
+        protected void OnServerOnlineSceneLoaded_GuildWar()
         {
             SendGuildWarStatus();
         }
 
         [DevExtMethods("OnClientOnlineSceneLoaded")]
-        private void OnClientOnlineSceneLoaded_GuildWar()
+        protected void OnClientOnlineSceneLoaded_GuildWar()
         {
             GetGuildWarClientConfig(null);
         }
 
         [DevExtMethods("Clean")]
-        private void Clean_GuildWar()
+        protected void Clean_GuildWar()
         {
             CancelInvoke(nameof(Update_GuildWar));
         }
