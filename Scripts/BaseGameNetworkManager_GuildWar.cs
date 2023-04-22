@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using MultiplayerARPG.MMO.GuildWar;
 using LiteNetLibManager;
 using LiteNetLib;
+using LiteNetLib.Utils;
 
 namespace MultiplayerARPG
 {
@@ -19,6 +19,7 @@ namespace MultiplayerARPG
         public System.DateTime LastOccupyTime { get; private set; }
         public int DefenderGuildId { get; private set; }
         public string DefenderGuildName { get; private set; }
+        public string DefenderGuildOptions { get; private set; }
 
         [DevExtMethods("RegisterMessages")]
         protected void RegisterMessages_GuildWar()
@@ -68,8 +69,9 @@ namespace MultiplayerARPG
             ServerSendPacket(connectionId, 0, DeliveryMethod.ReliableOrdered, guildWarStatusMsgType, (writer) =>
             {
                 writer.Put(GuildWarRunning);
-                writer.Put(DefenderGuildId);
+                writer.PutPackedInt(DefenderGuildId);
                 writer.Put(DefenderGuildName);
+                writer.Put(DefenderGuildOptions);
             });
         }
 
@@ -78,8 +80,9 @@ namespace MultiplayerARPG
             if (IsServer)
                 return;
             GuildWarRunning = messageHandler.Reader.GetBool();
-            DefenderGuildId = messageHandler.Reader.GetInt();
+            DefenderGuildId = messageHandler.Reader.GetPackedInt();
             DefenderGuildName = messageHandler.Reader.GetString();
+            DefenderGuildOptions = messageHandler.Reader.GetString();
         }
 
         public void Update_GuildWar()
@@ -93,6 +96,7 @@ namespace MultiplayerARPG
                 ServerSendSystemAnnounce(mapInfo.eventStartedMessage);
                 DefenderGuildId = 0;
                 DefenderGuildName = string.Empty;
+                DefenderGuildOptions = string.Empty;
                 ExpelLoserGuilds(DefenderGuildId);
                 RegenerateMonsters();
                 GuildWarRunning = true;
@@ -135,11 +139,11 @@ namespace MultiplayerARPG
         {
             GuildWarMapInfo mapInfo = CurrentMapInfo as GuildWarMapInfo;
             LastOccupyTime = System.DateTime.Now;
-            GuildData guild;
-            if (attackerGuildId > 0 && ServerGuildHandlers.TryGetGuild(attackerGuildId, out guild))
+            if (attackerGuildId > 0 && ServerGuildHandlers.TryGetGuild(attackerGuildId, out GuildData guild))
             {
                 DefenderGuildId = attackerGuildId;
                 DefenderGuildName = guild.guildName;
+                DefenderGuildOptions = guild.options;
                 ServerSendSystemAnnounce(string.Format(mapInfo.attackerWinMessage, DefenderGuildName));
                 GiveGuildBattleRewardTo(DefenderGuildId);
                 ExpelLoserGuilds(DefenderGuildId);
@@ -186,46 +190,46 @@ namespace MultiplayerARPG
         private void GiveGuildBattleRewardTo(int winnerGuildId)
         {
             GuildWarMapInfo mapInfo = CurrentMapInfo as GuildWarMapInfo;
-            string mailTitle;
-            string mailContent;
-            int rewardGold;
-            CurrencyAmount[] rewardCurrencies;
-            ItemAmount[] rewardItems;
+            string tempMailTitle;
+            string tempMailContent;
+            int tempRewardGold;
+            CurrencyAmount[] tempRewardCurrencies;
+            ItemAmount[] tempRewardItems;
             Mail tempMail;
 
             foreach (IPlayerCharacterData participant in ServerUserHandlers.GetPlayerCharacters())
             {
                 if (participant.GuildId == winnerGuildId)
                 {
-                    mailTitle = mapInfo.winMailTitle;
-                    mailContent = mapInfo.winMailContent;
-                    rewardGold = mapInfo.winRewardGold;
-                    rewardCurrencies = mapInfo.winRewardCurrencies;
-                    rewardItems = mapInfo.winRewardItems;
+                    tempMailTitle = mapInfo.winMailTitle;
+                    tempMailContent = mapInfo.winMailContent;
+                    tempRewardGold = mapInfo.winRewardGold;
+                    tempRewardCurrencies = mapInfo.winRewardCurrencies;
+                    tempRewardItems = mapInfo.winRewardItems;
                 }
                 else
                 {
-                    mailTitle = mapInfo.participantMailTitle;
-                    mailContent = mapInfo.participantMailContent;
-                    rewardGold = mapInfo.participantRewardGold;
-                    rewardCurrencies = mapInfo.participantRewardCurrencies;
-                    rewardItems = mapInfo.participantRewardItems;
+                    tempMailTitle = mapInfo.participantMailTitle;
+                    tempMailContent = mapInfo.participantMailContent;
+                    tempRewardGold = mapInfo.participantRewardGold;
+                    tempRewardCurrencies = mapInfo.participantRewardCurrencies;
+                    tempRewardItems = mapInfo.participantRewardItems;
                 }
                 tempMail = new Mail()
                 {
                     SenderId = guildWarMailSenderId,
                     SenderName = guildWarMailSenderName,
                     ReceiverId = participant.UserId,
-                    Title = mailTitle,
-                    Content = mailContent,
-                    Gold = rewardGold,
+                    Title = tempMailTitle,
+                    Content = tempMailContent,
+                    Gold = tempRewardGold,
                 };
-                foreach (CurrencyAmount currencyAmount in rewardCurrencies)
+                foreach (CurrencyAmount currencyAmount in tempRewardCurrencies)
                 {
                     if (currencyAmount.currency == null) continue;
                     tempMail.Currencies.Add(CharacterCurrency.Create(currencyAmount.currency.DataId, currencyAmount.amount));
                 }
-                foreach (ItemAmount itemAmount in rewardItems)
+                foreach (ItemAmount itemAmount in tempRewardItems)
                 {
                     if (itemAmount.item == null) continue;
                     tempMail.Items.Add(CharacterItem.Create(itemAmount.item, 1, itemAmount.amount));
