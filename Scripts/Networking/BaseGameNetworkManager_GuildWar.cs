@@ -85,12 +85,6 @@ namespace MultiplayerARPG
             SendGuildWarStatus();
         }
 
-        [DevExtMethods("OnClientOnlineSceneLoaded")]
-        protected void OnClientOnlineSceneLoaded_GuildWar()
-        {
-            GetGuildWarClientConfig(null);
-        }
-
         [DevExtMethods("Clean")]
         protected void Clean_GuildWar()
         {
