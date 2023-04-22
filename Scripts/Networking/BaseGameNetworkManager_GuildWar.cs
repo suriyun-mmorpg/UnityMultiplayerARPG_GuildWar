@@ -9,11 +9,25 @@ namespace MultiplayerARPG
 {
     public partial class BaseGameNetworkManager
     {
+        [System.Serializable]
+        public struct GuildWarMessageTypes
+        {
+            public ushort statusMsgType;
+            public ushort getClientConfigRequestType;
+        }
+
         [Header("Guild War")]
-        public ushort guildWarStatusMsgType = 200;
+        public GuildWarMessageTypes guildWarMessageTypes = new GuildWarMessageTypes()
+        {
+            statusMsgType = 1001,
+            getClientConfigRequestType = 1400,
+        };
         public bool recoverMonstersWhenRoundEnd = true;
         public string guildWarMailSenderId = "GUILDWAR";
         public string guildWarMailSenderName = "Guild War Manager";
+        public string guildWarServiceUrl = "http://localhost:9801";
+        public string guildWarServiceUrlForClient = "http://localhost:9801";
+        public string guildWarSecretKey = "secret";
 
         public bool GuildWarRunning { get; private set; }
         public System.DateTime LastOccupyTime { get; private set; }
@@ -22,32 +36,32 @@ namespace MultiplayerARPG
         public string DefenderGuildOptions { get; private set; }
 
         [DevExtMethods("RegisterMessages")]
-        protected void RegisterMessages_GuildWar()
+        private void RegisterMessages_GuildWar()
         {
-            RegisterClientMessage(guildWarStatusMsgType, HandleGuildWarStatusAtClient);
+            RegisterClientMessage(guildWarMessageTypes.statusMsgType, HandleGuildWarStatusAtClient);
         }
 
         [DevExtMethods("OnStartServer")]
-        protected void OnStartServer_GuildWar()
+        private void OnStartServer_GuildWar()
         {
             CancelInvoke(nameof(Update_GuildWar));
             InvokeRepeating(nameof(Update_GuildWar), 1, 1);
         }
 
         [DevExtMethods("OnPeerConnected")]
-        protected void OnPeerConnected_GuildWar(long connectionId)
+        private void OnPeerConnected_GuildWar(long connectionId)
         {
             SendGuildWarStatus(connectionId);
         }
 
         [DevExtMethods("OnServerOnlineSceneLoaded")]
-        protected void OnServerOnlineSceneLoaded_GuildWar()
+        private void OnServerOnlineSceneLoaded_GuildWar()
         {
             SendGuildWarStatus();
         }
 
         [DevExtMethods("Clean")]
-        protected void Clean_GuildWar()
+        private void Clean_GuildWar()
         {
             CancelInvoke(nameof(Update_GuildWar));
         }
@@ -66,7 +80,7 @@ namespace MultiplayerARPG
         {
             if (!IsServer)
                 return;
-            ServerSendPacket(connectionId, 0, DeliveryMethod.ReliableOrdered, guildWarStatusMsgType, (writer) =>
+            ServerSendPacket(connectionId, 0, DeliveryMethod.ReliableOrdered, guildWarMessageTypes.statusMsgType, (writer) =>
             {
                 writer.Put(GuildWarRunning);
                 writer.PutPackedInt(DefenderGuildId);
