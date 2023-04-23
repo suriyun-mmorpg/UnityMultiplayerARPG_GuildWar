@@ -128,10 +128,9 @@ namespace MultiplayerARPG
 
         public async void Update_GuildWar()
         {
-            if (!IsServer || CurrentMapInfo == null || !(CurrentMapInfo is GuildWarMapInfo))
+            if (!IsServer || CurrentMapInfo == null || !(CurrentMapInfo is GuildWarMapInfo mapInfo))
                 return;
 
-            GuildWarMapInfo mapInfo = CurrentMapInfo as GuildWarMapInfo;
             if (!GuildWarRunning && mapInfo.IsOn)
             {
                 ServerSendSystemAnnounce(mapInfo.eventStartedMessage);
@@ -150,7 +149,6 @@ namespace MultiplayerARPG
                 }
                 ExpelLoserGuilds(DefenderGuildId);
                 RegenerateMonsters();
-                // TODO: Load occupied guild
                 GuildWarRunning = true;
                 SendGuildWarStatus();
             }
