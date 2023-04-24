@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using MultiplayerARPG.MMO.GuildWar;
 using LiteNetLibManager;
 using LiteNetLib;
 using LiteNetLib.Utils;
@@ -291,21 +290,14 @@ namespace MultiplayerARPG
             }
         }
 
-        public void GetGuildWarClientConfig(ResponseDelegate<ResponseClientConfigMessage> callback)
+        public async UniTask<AsyncResponseData<ResponseClientConfigMessage>> GetGuildWarClientConfig()
         {
-            if (!IsClientConnected)
-                return;
-            ClientSendRequest(guildWarMessageTypes.getClientConfigRequestType, EmptyMessage.Value, (ResponseHandlerData responseHandler, AckResponseCode responseCode, ResponseClientConfigMessage response) =>
+            AsyncResponseData<ResponseClientConfigMessage> result = await ClientSendRequestAsync<EmptyMessage, ResponseClientConfigMessage>(guildWarMessageTypes.getClientConfigRequestType, EmptyMessage.Value);
+            if (result.ResponseCode == AckResponseCode.Success)
             {
-                if (responseCode == AckResponseCode.Success)
-                {
-                    GuildWarRestClientForClient.apiUrl = response.serviceUrl;
-                }
-                if (callback != null)
-                {
-                    callback.Invoke(responseHandler, responseCode, response);
-                }
-            });
+                GuildWarRestClientForClient.apiUrl = result.Response.serviceUrl;
+            }
+            return result;
         }
 
         private async UniTaskVoid HandleGetGuildWarClientConfigAtServer(RequestHandlerData requestHandler, EmptyMessage request,

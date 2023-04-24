@@ -1,4 +1,4 @@
-﻿namespace MultiplayerARPG.MMO.GuildWar
+﻿namespace MultiplayerARPG.GuildWar
 {
     public class GuildWarMonsterCharacterEntity : MonsterCharacterEntity
     {

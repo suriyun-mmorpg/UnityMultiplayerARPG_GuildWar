@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace MultiplayerARPG.MMO.GuildWar
+namespace MultiplayerARPG.GuildWar
 {
     [CreateAssetMenu(fileName = GameDataMenuConsts.GUILD_WAR_MAP_INFO_FILE, menuName = GameDataMenuConsts.GUILD_WAR_MAP_INFO_MENU, order = GameDataMenuConsts.GUILD_WAR_MAP_INFO_ORDER)]
     public class GuildWarMapInfo : BaseMapInfo

@@ -1,4 +1,4 @@
-﻿using MultiplayerARPG.MMO.GuildWar;
+﻿using MultiplayerARPG.GuildWar;
 
 namespace MultiplayerARPG
 {
