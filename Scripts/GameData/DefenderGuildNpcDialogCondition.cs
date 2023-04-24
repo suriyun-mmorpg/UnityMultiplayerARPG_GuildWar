@@ -13,6 +13,7 @@ namespace MultiplayerARPG.GuildWar
         private GuildWarMapInfo mapInfo;
 
         [SerializeField]
+        [Tooltip("Leave it empty to allow all guild member to access menu")]
         private List<byte> availableRoles = new List<byte>();
 
         public GuildWarRestClient RestClient
