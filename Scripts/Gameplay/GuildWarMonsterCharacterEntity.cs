@@ -9,7 +9,9 @@
                 ObjectId,
                 ObjectId.ToString(),
                 DataId,
-                0, 0, 0,
+                FactionId,
+                0 /* Party ID */,
+                0 /* Guild ID */,
                 IsInSafeArea,
                 Summoner);
         }
