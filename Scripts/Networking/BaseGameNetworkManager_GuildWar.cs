@@ -300,10 +300,9 @@ namespace MultiplayerARPG
             return result;
         }
 
-        private async UniTaskVoid HandleGetGuildWarClientConfigAtServer(RequestHandlerData requestHandler, EmptyMessage request,
+        private UniTaskVoid HandleGetGuildWarClientConfigAtServer(RequestHandlerData requestHandler, EmptyMessage request,
             RequestProceedResultDelegate<ResponseClientConfigMessage> result)
         {
-            await UniTask.Yield();
             if (!ServerUserHandlers.TryGetPlayerCharacter(requestHandler.ConnectionId, out IPlayerCharacterData playerCharacter))
             {
                 // Do nothing, player character is not enter the game yet.
@@ -311,12 +310,13 @@ namespace MultiplayerARPG
                 {
                     message = UITextKeys.UI_ERROR_NOT_LOGGED_IN,
                 });
-                return;
+                return default;
             }
             result.InvokeSuccess(new ResponseClientConfigMessage()
             {
                 serviceUrl = guildWarServiceUrlForClient,
             });
+            return default;
         }
     }
 }
