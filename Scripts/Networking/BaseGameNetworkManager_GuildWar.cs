@@ -15,14 +15,14 @@ namespace MultiplayerARPG
 {
     public partial class BaseGameNetworkManager
     {
-        [System.Serializable]
+        [Serializable]
         public struct GuildWarMessageTypes
         {
             public ushort statusMsgType;
             public ushort getClientConfigRequestType;
         }
 
-        [System.Serializable]
+        [Serializable]
         public struct GuildWarConfig
         {
             public bool? recoverMonstersWhenGuildWarRoundEnd;
@@ -69,7 +69,7 @@ namespace MultiplayerARPG
         }
 
         public bool GuildWarRunning { get; private set; }
-        public System.DateTime LastOccupyTime { get; private set; }
+        public DateTime LastOccupyTime { get; private set; }
         public int DefenderGuildId { get; private set; }
         public string DefenderGuildName { get; private set; }
         public string DefenderGuildOptions { get; private set; }
@@ -260,10 +260,10 @@ namespace MultiplayerARPG
 
             if (GuildWarRunning)
             {
-                if ((System.DateTime.Now - LastOccupyTime).TotalMinutes >= mapInfo.battleDuration)
+                if ((DateTime.Now - LastOccupyTime).TotalMinutes >= mapInfo.battleDuration)
                 {
                     ServerSendSystemAnnounce(mapInfo.roundEndedMessage);
-                    LastOccupyTime = System.DateTime.Now;
+                    LastOccupyTime = DateTime.Now;
                     if (DefenderGuildId > 0)
                     {
                         ServerSendSystemAnnounce(string.Format(mapInfo.defenderWinMessage, DefenderGuildName));
@@ -280,7 +280,7 @@ namespace MultiplayerARPG
         public async void CastleOccupied(int attackerGuildId)
         {
             GuildWarMapInfo mapInfo = CurrentMapInfo as GuildWarMapInfo;
-            LastOccupyTime = System.DateTime.Now;
+            LastOccupyTime = DateTime.Now;
             if (attackerGuildId > 0 && ServerGuildHandlers.TryGetGuild(attackerGuildId, out GuildData guild))
             {
                 DefenderGuildId = attackerGuildId;
