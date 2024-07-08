@@ -36,8 +36,8 @@ namespace MultiplayerARPG
         [Header("Guild War")]
         public GuildWarMessageTypes guildWarMessageTypes = new GuildWarMessageTypes()
         {
-            statusMsgType = 1001,
-            getClientConfigRequestType = 1400,
+            statusMsgType = 1500,
+            getClientConfigRequestType = 1501,
         };
         [FormerlySerializedAs("recoverMonstersWhenRoundEnd")]
         public bool recoverMonstersWhenGuildWarRoundEnd = true;
