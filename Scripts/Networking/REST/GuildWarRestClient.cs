@@ -7,7 +7,7 @@ namespace MultiplayerARPG.GuildWar
     public class GuildWarRestClient : RestClient
     {
         public string apiUrl;
-        public string secretKey;
+        public string appSecret;
 
         public Task<Result<OccupyListResponse>> GetOccupyHistoryList(int guildId, int limit = 20, int page = 1)
         {
@@ -48,7 +48,7 @@ namespace MultiplayerARPG.GuildWar
                 { nameof(guildOptions), guildOptions },
                 { nameof(attackerWin), attackerWin }
             };
-            return Post(GetUrl(apiUrl, "/internal/occupy"), form, secretKey, ApiKeyAuthHeaderSettings);
+            return Post(GetUrl(apiUrl, "/internal/occupy"), form, appSecret, ApiKeyAuthHeaderSettings);
         }
     }
 }

@@ -110,7 +110,7 @@ namespace MultiplayerARPG
         {
             ReadGuildWarServerConfig();
             GuildWarRestClientForServer.apiUrl = guildWarServiceUrl;
-            GuildWarRestClientForServer.secretKey = guildWarSecretKey;
+            GuildWarRestClientForServer.appSecret = guildWarSecretKey;
             CancelInvoke(nameof(Update_GuildWar));
             InvokeRepeating(nameof(Update_GuildWar), 1, 1);
         }
