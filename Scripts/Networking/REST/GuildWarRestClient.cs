@@ -48,7 +48,7 @@ namespace MultiplayerARPG.GuildWar
                 { nameof(guildOptions), guildOptions },
                 { nameof(attackerWin), attackerWin }
             };
-            return Post(GetUrl(apiUrl, "/internal/occupy"), form, secretKey);
+            return Post(GetUrl(apiUrl, "/internal/occupy"), form, secretKey, ApiKeyAuthHeaderSettings);
         }
     }
 }

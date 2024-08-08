@@ -29,12 +29,6 @@ namespace MultiplayerARPG.GuildWar
 
         public override async UniTask<bool> IsPass(IPlayerCharacterData playerCharacterEntity)
         {
-            if (!BaseGameNetworkManager.Singleton.IsServer && string.IsNullOrEmpty(RestClient.apiUrl))
-            {
-                AsyncResponseData<ResponseClientConfigMessage> result = await BaseGameNetworkManager.Singleton.GetGuildWarClientConfig();
-                if (result.ResponseCode != AckResponseCode.Success)
-                    return false;
-            }
             RestClient.Result<OccupyData> getOccupyResult = await RestClient.GetOccupy(mapInfo.Id);
             if (getOccupyResult.IsError())
             {

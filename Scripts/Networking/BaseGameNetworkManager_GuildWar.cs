@@ -1,12 +1,10 @@
-﻿using Cysharp.Threading.Tasks;
-using LiteNetLibManager;
+﻿using LiteNetLibManager;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using MultiplayerARPG.GuildWar;
-using Newtonsoft.Json;
+using MultiplayerARPG.MMO;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using UnityRestClient;
 using UnityEngine.Serialization;
@@ -19,25 +17,12 @@ namespace MultiplayerARPG
         public struct GuildWarMessageTypes
         {
             public ushort statusMsgType;
-            public ushort getClientConfigRequestType;
-        }
-
-        [Serializable]
-        public struct GuildWarConfig
-        {
-            public bool? recoverMonstersWhenGuildWarRoundEnd;
-            public string guildWarMailSenderId;
-            public string guildWarMailSenderName;
-            public string guildWarServiceUrl;
-            public string guildWarServiceUrlForClient;
-            public string guildWarSecretKey;
         }
 
         [Header("Guild War")]
         public GuildWarMessageTypes guildWarMessageTypes = new GuildWarMessageTypes()
         {
             statusMsgType = 1500,
-            getClientConfigRequestType = 1501,
         };
         [FormerlySerializedAs("recoverMonstersWhenRoundEnd")]
         public bool recoverMonstersWhenGuildWarRoundEnd = true;
@@ -74,48 +59,19 @@ namespace MultiplayerARPG
         public string DefenderGuildName { get; private set; }
         public string DefenderGuildOptions { get; private set; }
 
-        public void ReadGuildWarConfig()
+        public void ReadGuildWarServerConfig()
         {
-            // Json file read
-            bool configFileFound = false;
-            const string configFolder = "./Config";
-            const string configFilePath = configFolder + "/guildWarConfig.json";
-            GuildWarConfig config = new GuildWarConfig()
-            {
-                recoverMonstersWhenGuildWarRoundEnd = recoverMonstersWhenGuildWarRoundEnd,
-                guildWarMailSenderId = guildWarMailSenderId,
-                guildWarMailSenderName = guildWarMailSenderName,
-                guildWarServiceUrl = guildWarServiceUrl,
-                guildWarServiceUrlForClient = guildWarServiceUrlForClient,
-                guildWarSecretKey = guildWarSecretKey,
-            };
-            Logging.Log(LogTag, "Reading guild war config file from " + configFilePath);
-            if (File.Exists(configFilePath))
-            {
-                Logging.Log(LogTag, "Found guild war config file");
-                string dataAsJson = File.ReadAllText(configFilePath);
-                GuildWarConfig replacingConfig = JsonConvert.DeserializeObject<GuildWarConfig>(dataAsJson);
-                if (replacingConfig.recoverMonstersWhenGuildWarRoundEnd.HasValue)
-                    config.recoverMonstersWhenGuildWarRoundEnd = replacingConfig.recoverMonstersWhenGuildWarRoundEnd.Value;
-                if (replacingConfig.guildWarMailSenderId != null)
-                    config.guildWarMailSenderId = replacingConfig.guildWarMailSenderId;
-                if (replacingConfig.guildWarMailSenderName != null)
-                    config.guildWarMailSenderName = replacingConfig.guildWarMailSenderName;
-                if (replacingConfig.guildWarServiceUrl != null)
-                    config.guildWarServiceUrl = replacingConfig.guildWarServiceUrl;
-                if (replacingConfig.guildWarServiceUrlForClient != null)
-                    config.guildWarServiceUrlForClient = replacingConfig.guildWarServiceUrlForClient;
-                if (replacingConfig.guildWarSecretKey != null)
-                    config.guildWarSecretKey = replacingConfig.guildWarSecretKey;
-                configFileFound = true;
-            }
-
-            recoverMonstersWhenGuildWarRoundEnd = config.recoverMonstersWhenGuildWarRoundEnd.Value;
-            guildWarMailSenderId = config.guildWarMailSenderId;
-            guildWarMailSenderName = config.guildWarMailSenderName;
-            guildWarServiceUrl = config.guildWarServiceUrl;
-            guildWarServiceUrlForClient = config.guildWarServiceUrlForClient;
-            guildWarSecretKey = config.guildWarSecretKey;
+            ServerConfig serverConfig = ConfigManager.ReadServerConfig();
+            if (serverConfig.recoverMonstersWhenGuildWarRoundEnd.HasValue)
+                recoverMonstersWhenGuildWarRoundEnd = serverConfig.recoverMonstersWhenGuildWarRoundEnd.Value;
+            if (!string.IsNullOrEmpty(serverConfig.guildWarMailSenderId))
+                guildWarMailSenderId = serverConfig.guildWarMailSenderId;
+            if (!string.IsNullOrEmpty(serverConfig.guildWarMailSenderName))
+                guildWarMailSenderName = serverConfig.guildWarMailSenderName;
+            if (!string.IsNullOrEmpty(serverConfig.guildWarServiceUrl))
+                guildWarServiceUrl = serverConfig.guildWarServiceUrl;
+            if (!string.IsNullOrEmpty(serverConfig.guildWarSecretKey))
+                guildWarSecretKey = serverConfig.guildWarSecretKey;
 
             // Read configs from ENV
             string envVal;
@@ -131,38 +87,39 @@ namespace MultiplayerARPG
             envVal = Environment.GetEnvironmentVariable("guildWarServiceUrl");
             if (!string.IsNullOrEmpty(envVal))
                 guildWarServiceUrl = envVal;
-            envVal = Environment.GetEnvironmentVariable("guildWarServiceUrlForClient");
-            if (!string.IsNullOrEmpty(envVal))
-                guildWarServiceUrlForClient = envVal;
             envVal = Environment.GetEnvironmentVariable("guildWarSecretKey");
             if (!string.IsNullOrEmpty(envVal))
                 guildWarSecretKey = envVal;
+        }
 
-            if (!configFileFound)
-            {
-                // Write config file
-                Logging.Log(LogTag, "Not found guild war config file, creating a new one");
-                if (!Directory.Exists(configFolder))
-                    Directory.CreateDirectory(configFolder);
-                File.WriteAllText(configFilePath, JsonConvert.SerializeObject(config, Formatting.Indented));
-            }
+        public void ReadGuildWarClientConfig()
+        {
+            ClientConfig clientConfig = ConfigManager.ReadClientConfig();
+            if (!string.IsNullOrEmpty(clientConfig.guildWarServiceUrl))
+                guildWarServiceUrlForClient = clientConfig.guildWarServiceUrl;
         }
 
         [DevExtMethods("RegisterMessages")]
         protected void RegisterMessages_GuildWar()
         {
             RegisterClientMessage(guildWarMessageTypes.statusMsgType, HandleGuildWarStatusAtClient);
-            RegisterRequestToServer<EmptyMessage, ResponseClientConfigMessage>(guildWarMessageTypes.getClientConfigRequestType, HandleGetGuildWarClientConfigAtServer);
         }
 
         [DevExtMethods("OnStartServer")]
         protected void OnStartServer_GuildWar()
         {
-            ReadGuildWarConfig();
+            ReadGuildWarServerConfig();
             GuildWarRestClientForServer.apiUrl = guildWarServiceUrl;
             GuildWarRestClientForServer.secretKey = guildWarSecretKey;
             CancelInvoke(nameof(Update_GuildWar));
             InvokeRepeating(nameof(Update_GuildWar), 1, 1);
+        }
+
+        [DevExtMethods("OnStartClient")]
+        protected void OnStartClient_GuildWar(LiteNetLibClient client)
+        {
+            ReadGuildWarClientConfig();
+            GuildWarRestClientForClient.apiUrl = guildWarServiceUrlForClient;
         }
 
         [DevExtMethods("OnPeerConnected")]
@@ -379,35 +336,6 @@ namespace MultiplayerARPG
                 }
                 ServerMailHandlers.SendMail(tempMail);
             }
-        }
-
-        public async UniTask<AsyncResponseData<ResponseClientConfigMessage>> GetGuildWarClientConfig()
-        {
-            AsyncResponseData<ResponseClientConfigMessage> result = await ClientSendRequestAsync<EmptyMessage, ResponseClientConfigMessage>(guildWarMessageTypes.getClientConfigRequestType, EmptyMessage.Value);
-            if (result.ResponseCode == AckResponseCode.Success)
-            {
-                GuildWarRestClientForClient.apiUrl = result.Response.serviceUrl;
-            }
-            return result;
-        }
-
-        private UniTaskVoid HandleGetGuildWarClientConfigAtServer(RequestHandlerData requestHandler, EmptyMessage request,
-            RequestProceedResultDelegate<ResponseClientConfigMessage> result)
-        {
-            if (!ServerUserHandlers.TryGetPlayerCharacter(requestHandler.ConnectionId, out IPlayerCharacterData playerCharacter))
-            {
-                // Do nothing, player character is not enter the game yet.
-                result.InvokeError(new ResponseClientConfigMessage()
-                {
-                    message = UITextKeys.UI_ERROR_NOT_LOGGED_IN,
-                });
-                return default;
-            }
-            result.InvokeSuccess(new ResponseClientConfigMessage()
-            {
-                serviceUrl = guildWarServiceUrlForClient,
-            });
-            return default;
         }
     }
 }
