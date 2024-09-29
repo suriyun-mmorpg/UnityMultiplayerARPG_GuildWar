@@ -261,11 +261,22 @@ namespace MultiplayerARPG
                 if (otherGuildCharacters[i].GuildId <= 0 ||
                     otherGuildCharacters[i].GuildId != winnerGuildId)
                 {
-                    WarpCharacter(WarpPortalType.Default,
+                    WarpPortalType portalType = WarpPortalType.Default;
+#if !DISABLE_DIFFER_MAP_RESPAWNING
+                    string expelToMapName = otherGuildCharacters[i].RespawnMapName;
+                    Vector3 expelToPosition = otherGuildCharacters[i].RespawnPosition;
+#else
+                    string expelToMapName = otherGuildCharacters[i].CurrentMapName;
+                    Vector3 expelToPosition = otherGuildCharacters[i].CurrentPosition;
+#endif
+                    bool expelOverrideRotation = false;
+                    Vector3 expelRotation = Vector3.zero;
+                    if (CurrentMapInfo != null)
+                        CurrentMapInfo.GetRespawnPoint(otherGuildCharacters[i], out portalType, out expelToMapName, out expelToPosition, out expelOverrideRotation, out expelRotation);
+                    WarpCharacter(portalType,
                         otherGuildCharacters[i] as BasePlayerCharacterEntity,
-                        otherGuildCharacters[i].RespawnMapName,
-                        otherGuildCharacters[i].RespawnPosition,
-                        false, Vector3.zero);
+                        expelToMapName, expelToPosition,
+                        expelOverrideRotation, expelRotation);
                 }
             }
         }
