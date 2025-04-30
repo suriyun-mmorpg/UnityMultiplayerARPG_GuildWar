@@ -93,9 +93,9 @@ namespace MultiplayerARPG
                 guildWarSecretKey = envVal;
         }
 
-        public void ReadGuildWarClientConfig()
+        public async void ReadGuildWarClientConfig()
         {
-            ClientConfig clientConfig = ConfigManager.ReadClientConfig();
+            ClientConfig clientConfig = await ConfigManager.ReadClientConfig();
             if (!string.IsNullOrEmpty(clientConfig.guildWarServiceUrl))
                 guildWarServiceUrlForClient = clientConfig.guildWarServiceUrl;
         }
