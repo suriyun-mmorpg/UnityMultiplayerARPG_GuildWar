@@ -8,6 +8,7 @@
                 EntityTypes.GuildWarMonster,
                 ObjectId,
                 ObjectId.ToString(),
+                SubChannelId,
                 DataId,
                 FactionId,
                 0 /* Party ID */,

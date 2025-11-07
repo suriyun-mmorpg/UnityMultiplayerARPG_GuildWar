@@ -1,9 +1,7 @@
-﻿using MultiplayerARPG.GuildWar;
-
-namespace MultiplayerARPG
+﻿namespace MultiplayerARPG
 {
     public static partial class EntityTypes
     {
-        public static readonly string GuildWarMonster = nameof(GuildWarMonsterCharacterEntity);
+        public static readonly byte GuildWarMonster = 20;
     }
 }
