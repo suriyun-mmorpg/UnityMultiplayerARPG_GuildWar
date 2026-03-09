@@ -12,7 +12,7 @@ namespace MultiplayerARPG.GuildWar
                 strBuilder.Append(ObjectId);
                 id = strBuilder.ToString();
             }
-            return new EntityInfo(
+            return _info.SetEntityInfo(
                 EntityTypes.GuildWarMonster,
                 ObjectId,
                 id,
@@ -35,9 +35,9 @@ namespace MultiplayerARPG.GuildWar
                 }
                 else if (entityInfo.Type == EntityTypes.Monster &&
                     entityInfo.HasSummoner &&
-                    entityInfo.SummonerType == EntityTypes.Player)
+                    entityInfo.Summoner.Type == EntityTypes.Player)
                 {
-                    return entityInfo.SummonerGuildId;
+                    return entityInfo.Summoner.GuildId;
                 }
             }
             return 0;
