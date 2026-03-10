@@ -4,20 +4,23 @@ namespace MultiplayerARPG.GuildWar
 {
     public class GuildWarMonsterCharacterEntity : MonsterCharacterEntity
     {
-        public override EntityInfo GetInfo()
+        public override string GetId()
         {
-            string id;
             using (Utf16ValueStringBuilder strBuilder = ZString.CreateStringBuilder(true))
             {
                 strBuilder.Append(EntityTypes.GuildWarMonster);
                 strBuilder.Append('_');
                 strBuilder.Append(ObjectId);
-                id = strBuilder.ToString();
+                return strBuilder.ToString();
             }
+        }
+
+        public override EntityInfo GetInfo()
+        {
             return _info.SetEntityInfo(
                 EntityTypes.GuildWarMonster,
                 ObjectId,
-                id,
+                Id,
                 SubChannelId,
                 DataId,
                 FactionId,
