@@ -9,6 +9,8 @@ namespace MultiplayerARPG.GuildWar
             string id;
             using (Utf16ValueStringBuilder strBuilder = ZString.CreateStringBuilder(true))
             {
+                strBuilder.Append(EntityTypes.GuildWarMonster);
+                strBuilder.Append('_');
                 strBuilder.Append(ObjectId);
                 id = strBuilder.ToString();
             }
