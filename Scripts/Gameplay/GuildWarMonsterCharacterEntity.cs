@@ -27,6 +27,7 @@ namespace MultiplayerARPG.GuildWar
                 0 /* Party ID */,
                 0 /* Guild ID */,
                 IsInSafeArea,
+                this,
                 Summoner);
         }
 
