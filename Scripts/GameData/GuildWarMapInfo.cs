@@ -165,7 +165,7 @@ namespace MultiplayerARPG.GuildWar
             if (monsterCharacter.IsSummonedAndSummonerExisted)
             {
                 // If summoned by someone, will have same allies with summoner
-                return targetEntity.Id.Equals(monsterCharacter.Summoner.Id) || monsterCharacter.Summoner.IsAlly(targetEntity);
+                return targetEntity.Id.Equals(monsterCharacter.SummonerEntity.Id) || monsterCharacter.SummonerEntity.IsAlly(targetEntity);
             }
 
             if (targetEntity.Type == EntityTypes.GuildWarMonster)
@@ -250,7 +250,7 @@ namespace MultiplayerARPG.GuildWar
 
             // If summoned by someone, will have same enemies with summoner
             if (monsterCharacter.IsSummonedAndSummonerExisted)
-                return monsterCharacter.Summoner.IsEnemy(targetEntity);
+                return monsterCharacter.SummonerEntity.IsEnemy(targetEntity);
 
             // Attack only player by default
             if (targetEntity.Type == EntityTypes.Player)

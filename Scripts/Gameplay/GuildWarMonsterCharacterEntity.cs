@@ -28,7 +28,7 @@ namespace MultiplayerARPG.GuildWar
                 0 /* Guild ID */,
                 IsInSafeArea,
                 this,
-                Summoner);
+                SummonerEntity);
         }
 
         public int GetGuildId(EntityInfo entityInfo)
