@@ -286,8 +286,10 @@ namespace MultiplayerARPG
         {
             if (!recoverMonstersWhenGuildWarRoundEnd)
                 return;
-            foreach (LiteNetLibIdentity identity in Assets.GetSpawnedObjects())
+            var spawnedObjects = Assets.GetSpawnedObjects();
+            while (spawnedObjects.MoveNext())
             {
+                LiteNetLibIdentity identity = spawnedObjects.Current.Value;
                 GuildWarMonsterCharacterEntity monsterEntity = identity.GetComponent<GuildWarMonsterCharacterEntity>();
                 if (monsterEntity == null)
                     continue;
